@@ -19,17 +19,17 @@ public abstract class EntitySystem implements EntityObserver {
 
 	protected World world;
 
-	private Bag<Entity> actives;
+	private final Bag<Entity> actives;
 
-	private Aspect aspect;
+	private final Aspect aspect;
 
-	private BitSet allSet;
-	private BitSet exclusionSet;
-	private BitSet oneSet;
+	private final BitSet allSet;
+	private final BitSet exclusionSet;
+	private final BitSet oneSet;
 
 	private boolean passive;
 
-	private boolean dummy;
+	private final boolean dummy;
 	
 	/**
 	 * Creates an entity system that uses the specified aspect as a matcher against entities.
@@ -204,7 +204,7 @@ public abstract class EntitySystem implements EntityObserver {
 	 */
 	private static class SystemIndexManager {
 		private static int INDEX = 0;
-		private static HashMap<Class<? extends EntitySystem>, Integer> indices = new HashMap<>();
+		private static final HashMap<Class<? extends EntitySystem>, Integer> indices = new HashMap<>();
 		
 		private static int getIndexFor(Class<? extends EntitySystem> es){
 			Integer index = indices.get(es);

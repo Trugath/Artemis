@@ -3,7 +3,7 @@ package com.artemis.utils;
 public abstract class Timer {
 
 	private float delay;
-	private boolean repeat;
+	private final boolean repeat;
 	private float acc;
 	private boolean done;
 	private boolean stopped;
