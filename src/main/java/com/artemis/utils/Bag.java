@@ -1,6 +1,10 @@
 package com.artemis.utils;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.ConcurrentModificationException;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+import java.util.Set;
 
 /**
  * Collection type a bit like ArrayList but does not preserve the order of its
@@ -268,14 +272,14 @@ public class Bag<E> implements ImmutableBag<E>, Set<E> {
 		int newCapacity = (data.length * 3) / 2 + 1;
 		grow(newCapacity);
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	private void grow(int newCapacity) {
 		E[] oldData = data;
 		data = (E[])new Object[newCapacity];
 		System.arraycopy(oldData, 0, data, 0, oldData.length);
 	}
-	
+
 	public void ensureCapacity(int index) {
 		if(index >= data.length) {
 			grow(index*2);

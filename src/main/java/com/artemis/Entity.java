@@ -121,8 +121,8 @@ public final class Entity {
 	 * 
 	 * @return this entity for chaining.
 	 */
-	public Entity removeComponent(ComponentType type) {
-		componentManager.removeComponent(this, type);
+	public Entity removeComponent(ComponentType component) {
+		componentManager.removeComponent(this, component);
 		return this;
 	}
 	
