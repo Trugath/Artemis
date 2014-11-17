@@ -11,6 +11,8 @@ public class Bag<E> implements ImmutableBag<E>, Collection<E>, Set<E> {
 	private E[] data;
 	private int size = 0;
 
+    transient volatile int modCount;
+
 	/**
 	 * Constructs an empty Bag with an initial capacity of 64.
 	 * 
@@ -39,6 +41,7 @@ public class Bag<E> implements ImmutableBag<E>, Collection<E>, Set<E> {
 	 * @return element that was removed from the Bag
 	 */
 	public E remove(int index) {
+        modCount++;
 		E e = data[index]; // make copy of element to remove so it can be returned
 		data[index] = data[--size]; // overwrite item to remove with last element
 		data[size] = null; // null last element, so gc can do its work
@@ -53,6 +56,7 @@ public class Bag<E> implements ImmutableBag<E>, Collection<E>, Set<E> {
 	 */
 	public E removeLast() {
 		if(size > 0) {
+            modCount++;
 			E e = data[--size];
 			data[size] = null;
 			return e;
@@ -79,6 +83,7 @@ public class Bag<E> implements ImmutableBag<E>, Collection<E>, Set<E> {
             E e2 = data[i];
 
             if (o == e2) {
+                modCount++;
                 data[i] = data[--size]; // overwrite item to remove with last element
                 data[size] = null; // null last element, so gc can do its work
                 return true;
@@ -223,6 +228,7 @@ public class Bag<E> implements ImmutableBag<E>, Collection<E>, Set<E> {
 		}
 
         if(!contains(e)) {
+            ++modCount;
             data[size++] = e;
             return true;
         }
@@ -255,6 +261,7 @@ public class Bag<E> implements ImmutableBag<E>, Collection<E>, Set<E> {
 		if(index >= data.length) {
 			grow(index*2);
 		}
+        modCount++;
 		size = index+1;
 		data[index] = e;
 	}
@@ -284,6 +291,7 @@ public class Bag<E> implements ImmutableBag<E>, Collection<E>, Set<E> {
 	public void clear() {
 		// null all elements so gc can clean up
 		for (int i = 0; i < size; i++) {
+            modCount++;
 			data[i] = null;
 		}
 
@@ -340,6 +348,7 @@ public class Bag<E> implements ImmutableBag<E>, Collection<E>, Set<E> {
     public Iterator<E> iterator() {
         return new Iterator<E>() {
 
+            private int expectedModCount = modCount;
             private int currentIndex = size <= 0 ? -1 : 0;
             private int lastReturned = -1;
 
@@ -350,6 +359,9 @@ public class Bag<E> implements ImmutableBag<E>, Collection<E>, Set<E> {
 
             @Override
             public E next() {
+                if (modCount != expectedModCount)
+                    throw new ConcurrentModificationException();
+
                 if(currentIndex < 0)
                     throw new NoSuchElementException("next on empty iterator");
 
@@ -361,9 +373,12 @@ public class Bag<E> implements ImmutableBag<E>, Collection<E>, Set<E> {
 
             @Override
             public void remove() {
+                if (modCount != expectedModCount)
+                    throw new ConcurrentModificationException();
                 if(lastReturned < 0)
                     throw new IllegalStateException();
                 Bag.this.remove(lastReturned);
+                ++expectedModCount;
                 --currentIndex;
                 lastReturned = -1;
             }

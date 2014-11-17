@@ -32,7 +32,8 @@ public class BagTest {
                 CollectionFeature.ALLOWS_NULL_QUERIES,
                 CollectionFeature.SUPPORTS_ADD,
                 CollectionFeature.SUPPORTS_REMOVE,
-                CollectionFeature.SUPPORTS_ITERATOR_REMOVE)
+                CollectionFeature.SUPPORTS_ITERATOR_REMOVE,
+                CollectionFeature.FAILS_FAST_ON_CONCURRENT_MODIFICATION)
                 .createTestSuite();
     }
 }
