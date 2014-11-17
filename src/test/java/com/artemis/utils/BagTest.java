@@ -22,7 +22,7 @@ public class BagTest {
         return SetTestSuiteBuilder.using(new TestStringSetGenerator() {
             @Override
             protected Set<String> create(String[] elements) {
-                Bag<String> result = new Bag<>(elements.length+16);
+                Bag<String> result = new Bag<>();
                 Collections.addAll(result, elements);
                 return result;
             }
