@@ -61,13 +61,13 @@ public class World {
 	 * Makes sure all managers systems are initialized in the order they were added.
 	 */
 	public void initialize() {
-		for (int i = 0; i < managersBag.size(); i++) {
-			managersBag.get(i).initialize();
+		for (Manager m : managersBag) {
+			m.initialize();
 		}
 		
-		for (int i = 0; i < systemsBag.size(); i++) {
-			ComponentMapperInitHelper.config(systemsBag.get(i), this);
-			systemsBag.get(i).initialize();
+		for (EntitySystem s : systemsBag) {
+			ComponentMapperInitHelper.config(s, this);
+			s.initialize();
 		}
 	}
 	
@@ -274,8 +274,8 @@ public class World {
 	}
 
 	private void notifyManagers(Performer performer, Entity e) {
-		for(int a = 0; managersBag.size() > a; a++) {
-			performer.perform(managersBag.get(a), e);
+		for(Manager m : managersBag) {
+			performer.perform(m, e);
 		}
 	}
 	
@@ -297,8 +297,7 @@ public class World {
 	 */
 	private void check(Bag<Entity> entities, Performer performer) {
 		if (!entities.isEmpty()) {
-			for (int i = 0; entities.size() > i; i++) {
-				Entity e = entities.get(i);
+			for (Entity e : entities) {
 				notifyManagers(performer, e);
 				notifySystems(performer, e);
 			}
@@ -348,8 +347,7 @@ public class World {
 		
 		cm.clean();
 		
-		for(int i = 0; systemsBag.size() > i; i++) {
-			EntitySystem system = systemsBag.get(i);
+		for(EntitySystem system : systemsBag) {
 			if(!system.isPassive()) {
 				system.process();
 			}

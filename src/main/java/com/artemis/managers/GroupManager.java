@@ -74,8 +74,8 @@ public class GroupManager extends Manager {
 	public void removeFromAllGroups(Entity e) {
 		Bag<String> groups = groupsByEntity.get(e);
 		if(groups != null) {
-			for(int i = 0; groups.size() > i; i++) {
-				Bag<Entity> entities = entitiesByGroup.get(groups.get(i));
+			for(String group : groups) {
+				Bag<Entity> entities = entitiesByGroup.get(group);
 				if(entities != null) {
 					entities.remove(e);
 				}
