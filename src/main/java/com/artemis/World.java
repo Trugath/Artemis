@@ -124,7 +124,7 @@ public class World {
 	 * @param manager to delete.
 	 */
 	public void deleteManager(Manager manager) {
-		managers.remove(manager);
+		managers.remove(manager.getClass());
 		managersBag.remove(manager);
 	}
 
