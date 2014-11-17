@@ -82,21 +82,21 @@ public abstract class EntitySystem implements EntityObserver {
 	/**
 	 * Override to implement code that gets executed when systems are initialized.
 	 */
-	protected void initialize() {};
+	protected void initialize() {}
 
-	/**
+    /**
 	 * Called if the system has received a entity it is interested in, e.g. created or a component was added to it.
 	 * @param e the entity that was added to this system.
 	 */
-	protected void inserted(Entity e) {};
+	protected void inserted(Entity e) {}
 
-	/**
+    /**
 	 * Called if a entity was removed from this system, e.g. deleted or had one of it's components removed.
 	 * @param e the entity that was removed from this system.
 	 */
-	protected void removed(Entity e) {};
+	protected void removed(Entity e) {}
 
-	/**
+    /**
 	 * Will check if the entity is of interest to this system.
 	 * @param e entity to check
 	 */
