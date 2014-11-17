@@ -220,7 +220,7 @@ public class Bag<E> implements ImmutableBag<E>, Set<E> {
 	public boolean add(E e) {
 
         if(e == null)
-            throw new NullPointerException();
+            return false;
 
 		// is size greater than capacity increase capacity
 		if (size == data.length) {
@@ -243,9 +243,7 @@ public class Bag<E> implements ImmutableBag<E>, Set<E> {
 
         boolean modified = false;
         for(E e : c) {
-            if(e == null)
-                throw new NullPointerException();
-            if(!contains(e))
+            if(e != null && !contains(e))
                 modified |= add(e);
         }
         return modified;
