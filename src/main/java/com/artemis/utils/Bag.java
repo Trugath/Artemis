@@ -7,7 +7,7 @@ import java.util.*;
  * entities, speedwise it is very good, especially suited for games.
  */
 
-public class Bag<E> implements ImmutableBag<E>, Collection<E> {
+public class Bag<E> implements ImmutableBag<E>, Collection<E>, Set<E> {
 	private E[] data;
 	private int size = 0;
 
@@ -72,6 +72,9 @@ public class Bag<E> implements ImmutableBag<E>, Collection<E> {
 	 */
     @Override
     public boolean remove(Object o) {
+        if(o == null)
+            return false;
+
         for (int i = 0; i < size; i++) {
             E e2 = data[i];
 
@@ -93,6 +96,9 @@ public class Bag<E> implements ImmutableBag<E>, Collection<E> {
 	 */
     @Override
     public boolean contains(Object o) {
+        if(o == null)
+            return false;
+
         for(int i = 0; size > i; i++) {
             if(o == data[i]) {
                 return true;
@@ -207,21 +213,34 @@ public class Bag<E> implements ImmutableBag<E>, Collection<E> {
 	 *            element to be added to this list
 	 */
 	public boolean add(E e) {
+
+        if(e == null)
+            throw new NullPointerException();
+
 		// is size greater than capacity increase capacity
 		if (size == data.length) {
 			grow();
 		}
 
-		data[size++] = e;
-        return true;
+        if(!contains(e)) {
+            data[size++] = e;
+            return true;
+        }
+        return false;
 	}
 
 
     @Override
     public boolean addAll(Collection<? extends E> c) {
+        if(c == null)
+            throw new NullPointerException();
+
         boolean modified = false;
         for(E e : c) {
-            modified |= add(e);
+            if(e == null)
+                throw new NullPointerException();
+            if(!contains(e))
+                modified |= add(e);
         }
         return modified;
     }
@@ -272,8 +291,35 @@ public class Bag<E> implements ImmutableBag<E>, Collection<E> {
 	}
 
     @Override
+    public String toString() {
+        String result = "[";
+        if(size>0)
+            result += data[0];
+        for (int i = 1; i < size; i++) {
+            result += ", " + data[i];
+        }
+        return result + "]";
+    }
+
+    @Override
+    public int hashCode() {
+        int result = 0;
+        for (int i = 0; i < size; i++) {
+            result += data[i].hashCode();
+        }
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        return o == this || o instanceof Set && ((Collection<?>) o).size() == size() && containsAll((Collection<?>) o);
+    }
+
+    @Override
     public Object[] toArray() {
-        return data.clone();
+        E[] result = (E[]) java.lang.reflect.Array.newInstance(data.getClass().getComponentType(), size);
+        System.arraycopy(data, 0, result, 0, size);
+        return result;
     }
 
     @Override
@@ -282,11 +328,10 @@ public class Bag<E> implements ImmutableBag<E>, Collection<E> {
             a = (T[]) java.lang.reflect.Array.newInstance(a.getClass().getComponentType(), size);
 
         Object[] result = a;
-        for(int i = 0; size > i; i++)
-            result[i++] = data[i];
+        System.arraycopy(data, 0, result, 0, size);
 
-        if (a.length > size)
-            a[size] = null;
+        if (result.length > size)
+            result[size] = null;
 
         return a;
     }
@@ -296,10 +341,11 @@ public class Bag<E> implements ImmutableBag<E>, Collection<E> {
         return new Iterator<E>() {
 
             private int currentIndex = size <= 0 ? -1 : 0;
+            private int lastReturned = -1;
 
             @Override
             public boolean hasNext() {
-                return currentIndex < size && data[currentIndex] != null;
+                return currentIndex > -1 && currentIndex < size && data[currentIndex] != null;
             }
 
             @Override
@@ -307,14 +353,19 @@ public class Bag<E> implements ImmutableBag<E>, Collection<E> {
                 if(currentIndex < 0)
                     throw new NoSuchElementException("next on empty iterator");
 
-                return data[currentIndex++];
+                if(currentIndex >= size)
+                    throw new NoSuchElementException();
+
+                return data[lastReturned = currentIndex++];
             }
 
             @Override
             public void remove() {
-                if(currentIndex < 0)
-                    throw new NoSuchElementException("remove on empty iterator");
-                Bag.this.remove(currentIndex--);
+                if(lastReturned < 0)
+                    throw new IllegalStateException();
+                Bag.this.remove(lastReturned);
+                --currentIndex;
+                lastReturned = -1;
             }
         };
     }
