@@ -1,7 +1,6 @@
 package com.artemis.utils;
 
 import java.util.*;
-import java.util.function.Predicate;
 
 /**
  * Collection type a bit like ArrayList but does not preserve the order of its
