@@ -7,7 +7,7 @@ import java.util.*;
  * entities, speedwise it is very good, especially suited for games.
  */
 
-public class Bag<E> implements ImmutableBag<E>, Collection<E>, Set<E> {
+public class Bag<E> implements ImmutableBag<E>, Set<E> {
 	private E[] data;
 	private int size = 0;
 
@@ -24,8 +24,7 @@ public class Bag<E> implements ImmutableBag<E>, Collection<E>, Set<E> {
 	/**
 	 * Constructs an empty Bag with the specified initial capacity.
 	 * 
-	 * @param capacity
-	 *            the initial capacity of Bag
+	 * @param capacity the initial capacity of Bag
 	 */
 	@SuppressWarnings("unchecked")
 	public Bag(int capacity) {
@@ -95,9 +94,6 @@ public class Bag<E> implements ImmutableBag<E>, Collection<E>, Set<E> {
 
     /**
 	 * Check if bag contains this element.
-	 * 
-	 * @param o
-	 * @return
 	 */
     @Override
     public boolean contains(Object o) {
@@ -112,7 +108,9 @@ public class Bag<E> implements ImmutableBag<E>, Collection<E>, Set<E> {
         return false;
     }
 
-
+    /**
+     * Check if bag contains all elements.
+     */
     @Override
     public boolean containsAll(Collection<?> c) {
         for( Object o : c ) {
@@ -124,7 +122,7 @@ public class Bag<E> implements ImmutableBag<E>, Collection<E>, Set<E> {
 
     /**
 	 * Removes from this Bag all of its elements that are contained in the
-	 * specified Bag.
+	 * specified Collection.
 	 * 
 	 * @param c collection containing elements to be removed from this Bag
 	 * @return {@code true} if this Bag changed as a result of the call
@@ -148,6 +146,13 @@ public class Bag<E> implements ImmutableBag<E>, Collection<E>, Set<E> {
         return modified;
     }
 
+    /**
+     * Removes from this Bag all of its elements that are not contained in the
+     * specified Collection.
+     *
+     * @param c collection containing elements to be retained in this Bag
+     * @return {@code true} if this Bag changed as a result of the call
+     */
     @Override
     public boolean retainAll(Collection<?> c) {
         boolean modified = false;
@@ -165,8 +170,7 @@ public class Bag<E> implements ImmutableBag<E>, Collection<E>, Set<E> {
     /**
 	 * Returns the element at the specified position in Bag.
 	 * 
-	 * @param index
-	 *            index of the element to return
+	 * @param index index of the element to return
 	 * @return the element at the specified position in bag
 	 */
 	public E get(int index) {
@@ -193,9 +197,6 @@ public class Bag<E> implements ImmutableBag<E>, Collection<E>, Set<E> {
 	
 	/**
 	 * Checks if the internal storage supports this index.
-	 * 
-	 * @param index
-	 * @return
 	 */
 	public boolean isIndexWithinBounds(int index) {
 		return index < getCapacity();
@@ -214,8 +215,7 @@ public class Bag<E> implements ImmutableBag<E>, Collection<E>, Set<E> {
 	 * Adds the specified element to the end of this bag. if needed also
 	 * increases the capacity of the bag.
 	 * 
-	 * @param e
-	 *            element to be added to this list
+	 * @param e element to be added to this list
 	 */
 	public boolean add(E e) {
 
@@ -323,13 +323,15 @@ public class Bag<E> implements ImmutableBag<E>, Collection<E>, Set<E> {
         return o == this || o instanceof Set && ((Collection<?>) o).size() == size() && containsAll((Collection<?>) o);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public Object[] toArray() {
-        E[] result = (E[]) java.lang.reflect.Array.newInstance(data.getClass().getComponentType(), size);
+        E[] result = (E[]) new Object[size];
         System.arraycopy(data, 0, result, 0, size);
         return result;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public <T> T[] toArray(T[] a) {
         if (a.length < size)

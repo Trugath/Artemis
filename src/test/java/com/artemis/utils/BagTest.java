@@ -15,7 +15,7 @@ import java.util.Collections;
 import java.util.Set;
 
 /**
- * Created by Elliot on 17/11/2014.
+ * Use guava to test the Bag implementation (as a Set)
  */
 public class BagTest {
     public static TestSuite suite() {
