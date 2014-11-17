@@ -1,11 +1,14 @@
 package com.artemis.utils;
 
+import java.util.*;
+import java.util.function.Predicate;
+
 /**
  * Collection type a bit like ArrayList but does not preserve the order of its
  * entities, speedwise it is very good, especially suited for games.
  */
 
-public class Bag<E> implements ImmutableBag<E> {
+public class Bag<E> implements ImmutableBag<E>, Collection<E> {
 	private E[] data;
 	private int size = 0;
 
@@ -64,69 +67,92 @@ public class Bag<E> implements ImmutableBag<E> {
 	 * it is present. If the Bag does not contain the element, it is unchanged.
 	 * does this by overwriting it was last element then removing last element
 	 * 
-	 * @param e
+	 * @param o
 	 *            element to be removed from this list, if present
 	 * @return <tt>true</tt> if this list contained the specified element
 	 */
-	public boolean remove(E e) {
-		for (int i = 0; i < size; i++) {
-			E e2 = data[i];
+    @Override
+    public boolean remove(Object o) {
+        for (int i = 0; i < size; i++) {
+            E e2 = data[i];
 
-			if (e == e2) {
-				data[i] = data[--size]; // overwrite item to remove with last element
-				data[size] = null; // null last element, so gc can do its work
-				return true;
-			}
-		}
+            if (o == e2) {
+                data[i] = data[--size]; // overwrite item to remove with last element
+                data[size] = null; // null last element, so gc can do its work
+                return true;
+            }
+        }
 
-		return false;
-	}
-	
-	/**
+        return false;
+    }
+
+    /**
 	 * Check if bag contains this element.
 	 * 
-	 * @param e
+	 * @param o
 	 * @return
 	 */
-	public boolean contains(E e) {
-		for(int i = 0; size > i; i++) {
-			if(e == data[i]) {
-				return true;
-			}
-		}
-		return false;
-	}
+    @Override
+    public boolean contains(Object o) {
+        for(int i = 0; size > i; i++) {
+            if(o == data[i]) {
+                return true;
+            }
+        }
+        return false;
+    }
 
-	/**
+
+    @Override
+    public boolean containsAll(Collection<?> c) {
+        for( Object o : c ) {
+            if( !contains(o) )
+                return false;
+        }
+        return true;
+    }
+
+    /**
 	 * Removes from this Bag all of its elements that are contained in the
 	 * specified Bag.
 	 * 
-	 * @param bag
-	 *            Bag containing elements to be removed from this Bag
+	 * @param c collection containing elements to be removed from this Bag
 	 * @return {@code true} if this Bag changed as a result of the call
 	 */
-	public boolean removeAll(ImmutableBag<E> bag) {
-		boolean modified = false;
+    @Override
+    public boolean removeAll(Collection<?> c) {
+        boolean modified = false;
 
-		for (int i = 0; i < bag.size(); i++) {
-			E e1 = bag.get(i);
+        for (Object e1 : c) {
+            for (int j = 0; j < size; j++) {
+                E e2 = data[j];
 
-			for (int j = 0; j < size; j++) {
-				E e2 = data[j];
+                if (e1 == e2) {
+                    remove(j);
+                    modified = true;
+                    break;
+                }
+            }
+        }
 
-				if (e1 == e2) {
-					remove(j);
-					j--;
-					modified = true;
-					break;
-				}
-			}
-		}
+        return modified;
+    }
 
-		return modified;
-	}
+    @Override
+    public boolean retainAll(Collection<?> c) {
+        boolean modified = false;
+        for (int i = 0; i < size; i++) {
+            E e = data[i];
+            if(!c.contains(e)) {
+                remove(e);
+                --i;
+                modified = true;
+            }
+        }
+        return modified;
+    }
 
-	/**
+    /**
 	 * Returns the element at the specified position in Bag.
 	 * 
 	 * @param index
@@ -174,23 +200,34 @@ public class Bag<E> implements ImmutableBag<E> {
 		return size == 0;
 	}
 
-	/**
+    /**
 	 * Adds the specified element to the end of this bag. if needed also
 	 * increases the capacity of the bag.
 	 * 
 	 * @param e
 	 *            element to be added to this list
 	 */
-	public void add(E e) {
+	public boolean add(E e) {
 		// is size greater than capacity increase capacity
 		if (size == data.length) {
 			grow();
 		}
 
 		data[size++] = e;
+        return true;
 	}
 
-	/**
+
+    @Override
+    public boolean addAll(Collection<? extends E> c) {
+        boolean modified = false;
+        for(E e : c) {
+            modified |= add(e);
+        }
+        return modified;
+    }
+
+    /**
 	 * Set element at specified index in the bag.
 	 * 
 	 * @param index position of element
@@ -235,14 +272,51 @@ public class Bag<E> implements ImmutableBag<E> {
 		size = 0;
 	}
 
-	/**
-	 * Add all items into this bag. 
-	 * @param added
-	 */
-	public void addAll(ImmutableBag<E> items) {
-		for(int i = 0; items.size() > i; i++) {
-			add(items.get(i));
-		}
-	}
+    @Override
+    public Object[] toArray() {
+        return data.clone();
+    }
 
+    @Override
+    public <T> T[] toArray(T[] a) {
+        if (a.length < size)
+            a = (T[]) java.lang.reflect.Array.newInstance(a.getClass().getComponentType(), size);
+
+        Object[] result = a;
+        for(int i = 0; size > i; i++)
+            result[i++] = data[i];
+
+        if (a.length > size)
+            a[size] = null;
+
+        return a;
+    }
+
+    @Override
+    public Iterator<E> iterator() {
+        return new Iterator<E>() {
+
+            private int currentIndex = size <= 0 ? -1 : 0;
+
+            @Override
+            public boolean hasNext() {
+                return currentIndex < size && data[currentIndex] != null;
+            }
+
+            @Override
+            public E next() {
+                if(currentIndex < 0)
+                    throw new NoSuchElementException("next on empty iterator");
+
+                return data[currentIndex++];
+            }
+
+            @Override
+            public void remove() {
+                if(currentIndex < 0)
+                    throw new NoSuchElementException("remove on empty iterator");
+                Bag.this.remove(currentIndex--);
+            }
+        };
+    }
 }
