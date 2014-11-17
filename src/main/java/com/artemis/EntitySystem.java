@@ -36,7 +36,7 @@ public abstract class EntitySystem implements EntityObserver {
 	 * @param aspect to match against entities
 	 */
 	public EntitySystem(Aspect aspect) {
-		actives = new Bag<Entity>();
+		actives = new Bag<>();
 		this.aspect = aspect;
 		allSet = aspect.getAllSet();
 		exclusionSet = aspect.getExclusionSet();
@@ -204,7 +204,7 @@ public abstract class EntitySystem implements EntityObserver {
 	 */
 	private static class SystemIndexManager {
 		private static int INDEX = 0;
-		private static HashMap<Class<? extends EntitySystem>, Integer> indices = new HashMap<Class<? extends EntitySystem>, Integer>();
+		private static HashMap<Class<? extends EntitySystem>, Integer> indices = new HashMap<>();
 		
 		private static int getIndexFor(Class<? extends EntitySystem> es){
 			Integer index = indices.get(es);
