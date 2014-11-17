@@ -8,19 +8,19 @@ public class TrigLUT {
 		System.out.println(cosDeg(180f));
 	}
 
-	public static final float sin(float rad) {
+	public static float sin(float rad) {
 		return sin[(int) (rad * radToIndex) & SIN_MASK];
 	}
 
-	public static final float cos(float rad) {
+	public static float cos(float rad) {
 		return cos[(int) (rad * radToIndex) & SIN_MASK];
 	}
 
-	public static final float sinDeg(float deg) {
+	public static float sinDeg(float deg) {
 		return sin[(int) (deg * degToIndex) & SIN_MASK];
 	}
 
-	public static final float cosDeg(float deg) {
+	public static float cosDeg(float deg) {
 		return cos[(int) (deg * degToIndex) & SIN_MASK];
 	}
 
