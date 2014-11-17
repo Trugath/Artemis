@@ -23,7 +23,7 @@ public class World {
 	private final EntityManager em;
 	private final ComponentManager cm;
 
-	public float delta;
+	public double delta;
 	private final Bag<Entity> added;
 	private final Bag<Entity> changed;
 	private final Bag<Entity> deleted;
@@ -136,7 +136,7 @@ public class World {
 	 * 
 	 * @return delta time since last game loop.
 	 */
-	public float getDelta() {
+	public double getDelta() {
 		return delta;
 	}
 
@@ -145,7 +145,7 @@ public class World {
 	 * 
 	 * @param delta time since last game loop.
 	 */
-	public void setDelta(float delta) {
+	public void setDelta(double delta) {
 		this.delta = delta;
 	}
 	

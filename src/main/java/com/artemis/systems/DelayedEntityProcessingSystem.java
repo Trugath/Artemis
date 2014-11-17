@@ -23,17 +23,17 @@ import com.artemis.utils.ImmutableBag;
  * Implementation notes:
  * In order to start the system you need to override the inserted(Entity e) method,
  * look up the delay time from that entity and offer it to the system by using the 
- * offerDelay(float delay) method.
- * Also, when processing the entities you must also call offerDelay(float delay)
+ * offerDelay(double delay) method.
+ * Also, when processing the entities you must also call offerDelay(double delay)
  * for all valid entities.
  * 
  * @author Arni Arent
  *
  */
 public abstract class DelayedEntityProcessingSystem extends EntitySystem {
-	private float delay;
+	private double delay;
 	private boolean running;
-	private float acc;
+	private double acc;
 
 	public DelayedEntityProcessingSystem(Aspect aspect) {
 		super(aspect);
@@ -44,7 +44,7 @@ public abstract class DelayedEntityProcessingSystem extends EntitySystem {
 		for (int i = 0, s = entities.size(); s > i; i++) {
 			Entity entity = entities.get(i);
 			processDelta(entity, acc);
-			float remaining = getRemainingDelay(entity);
+            double remaining = getRemainingDelay(entity);
 			if(remaining <= 0) {
 				processExpired(entity);
 			} else {
@@ -56,7 +56,7 @@ public abstract class DelayedEntityProcessingSystem extends EntitySystem {
 	
 	@Override
 	protected void inserted(Entity e) {
-		float delay = getRemainingDelay(e);
+        double delay = getRemainingDelay(e);
 		if(delay > 0) {
 			offerDelay(delay);
 		}
@@ -68,7 +68,7 @@ public abstract class DelayedEntityProcessingSystem extends EntitySystem {
 	 * @param e entity
 	 * @return delay
 	 */
-	protected abstract float getRemainingDelay(Entity e);
+	protected abstract double getRemainingDelay(Entity e);
 	
 	@Override
 	protected final boolean checkProcessing() {
@@ -90,7 +90,7 @@ public abstract class DelayedEntityProcessingSystem extends EntitySystem {
 	 * @param e the entity to process.
 	 * @param accumulatedDelta the delta time since this system was last executed.
 	 */
-	protected abstract void processDelta(Entity e, float accumulatedDelta);
+	protected abstract void processDelta(Entity e, double accumulatedDelta);
 
 	protected abstract void processExpired(Entity e);
 
@@ -100,9 +100,9 @@ public abstract class DelayedEntityProcessingSystem extends EntitySystem {
 	 * 
 	 * Cancels current delayed run and starts a new one.
 	 * 
-	 * @param delta time delay until processing starts.
+	 * @param delay time delay until processing starts.
 	 */
-	public void restart(float delay) {
+	public void restart(double delay) {
 		this.delay = delay;
 		this.acc = 0;
 		running = true;
@@ -122,7 +122,7 @@ public abstract class DelayedEntityProcessingSystem extends EntitySystem {
 	 * 
 	 * @param delay
 	 */
-	public void offerDelay(float delay) {
+	public void offerDelay(double delay) {
 		if(!running || delay < getRemainingTimeUntilProcessing()) {
 			restart(delay);
 		}
@@ -134,7 +134,7 @@ public abstract class DelayedEntityProcessingSystem extends EntitySystem {
 	 * 
 	 * @return the originally set delay.
 	 */
-	public float getInitialTimeDelay() {
+	public double getInitialTimeDelay() {
 		return delay;
 	}
 	
@@ -145,7 +145,7 @@ public abstract class DelayedEntityProcessingSystem extends EntitySystem {
 	 * 
 	 * @return time when system will run at.
 	 */
-	public float getRemainingTimeUntilProcessing() {
+	public double getRemainingTimeUntilProcessing() {
 		if(running) {
 			return delay-acc;
 		}
