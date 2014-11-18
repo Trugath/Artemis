@@ -268,8 +268,8 @@ public class World {
 	}
 	
 	private void notifySystems(Performer performer, Entity e) {
-		for(int i = 0, s=systemsBag.size(); s > i; i++) {
-			performer.perform(systemsBag.get(i), e);
+		for(EntitySystem system : systemsBag) {
+			performer.perform(system, e);
 		}
 	}
 
