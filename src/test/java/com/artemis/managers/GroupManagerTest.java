@@ -24,8 +24,10 @@ public class GroupManagerTest {
     }
 
     @Test
-    public void testUnknownGroup() throws Exception {
+    public void testUnknownGroupEntity() throws Exception {
         GroupManager gm = new GroupManager();
+        gm.remove(new World().createEntity(), "b");
+        gm.removeFromAllGroups(new World().createEntity());
         assertTrue(gm.getEntities("a").isEmpty());
     }
 
