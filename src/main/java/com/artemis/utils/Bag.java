@@ -104,7 +104,7 @@ public class Bag<E> implements ImmutableBag<E>, Set<E> {
         if(o == null)
             return false;
 
-        for(int i = 0; size > i; i++) {
+        for(int i = 0; i < size; ++i) {
             if(o == data[i]) {
                 return true;
             }
