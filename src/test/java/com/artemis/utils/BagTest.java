@@ -9,7 +9,7 @@ import org.junit.runner.JUnitCore;
 
 import java.util.Collections;
 import java.util.Set;
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 /**
  * Use guava to test the Bag implementation (as a Set)
@@ -50,5 +50,31 @@ public class BagTest {
         assertEquals(bag.removeLast(), "b");
         assertEquals(bag.removeLast(), "a");
         assertEquals(bag.removeLast(), null);
+    }
+
+    @Test
+    public void testEnsureCapacity() {
+        Bag<String> bag = new Bag<String>(0);
+        assertEquals(bag.getCapacity(), 0);
+        bag.ensureCapacity(16);
+        assertTrue(bag.getCapacity() >= 16);
+    }
+
+    @Test
+    public void testSet() {
+        Bag<String> bag = new Bag<String>(0);
+        assertEquals(bag.getCapacity(), 0);
+        bag.set(64, "a");
+        assertTrue(bag.getCapacity() >= 64);
+    }
+
+    @Test
+    public void testGrow() {
+        Bag<String> bag = new Bag<String>(0);
+        assertEquals(bag.getCapacity(), 0);
+        for(int i = 0; i < 64; ++i) {
+            bag.add("" + (byte)(i + 64));
+        }
+        assertTrue(bag.getCapacity() >= 64);
     }
 }
