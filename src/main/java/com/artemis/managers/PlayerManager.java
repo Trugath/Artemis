@@ -51,6 +51,7 @@ public class PlayerManager extends Manager {
 			if(entities != null) {
 				entities.remove(e);
 			}
+            playerByEntity.remove(e);
 		}
 	}
 	
