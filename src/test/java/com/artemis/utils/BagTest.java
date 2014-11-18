@@ -9,6 +9,7 @@ import org.junit.runner.JUnitCore;
 
 import java.util.Collections;
 import java.util.Set;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Use guava to test the Bag implementation (as a Set)
@@ -35,5 +36,19 @@ public class BagTest {
                                     CollectionFeature.FAILS_FAST_ON_CONCURRENT_MODIFICATION)
                             .createTestSuite()
             );
+    }
+
+    @Test
+    public void testRemoveLast() {
+        Bag<String> bag = new Bag<>();
+        bag.add("a");
+        bag.add("b");
+        bag.add("c");
+        assertEquals(bag.removeLast(), "c");
+        bag.add("d");
+        assertEquals(bag.removeLast(), "d");
+        assertEquals(bag.removeLast(), "b");
+        assertEquals(bag.removeLast(), "a");
+        assertEquals(bag.removeLast(), null);
     }
 }
