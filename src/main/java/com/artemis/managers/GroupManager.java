@@ -1,12 +1,12 @@
 package com.artemis.managers;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import com.artemis.Entity;
 import com.artemis.Manager;
 import com.artemis.utils.Bag;
 import com.artemis.utils.ImmutableBag;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * If you need to group your entities together, e.g. tanks going into "units" group or explosions into "effects",

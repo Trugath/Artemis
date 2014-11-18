@@ -1,11 +1,11 @@
 package com.artemis.managers;
 
+import com.artemis.Entity;
+import com.artemis.Manager;
+
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-
-import com.artemis.Entity;
-import com.artemis.Manager;
 
 
 /**

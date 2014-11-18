@@ -1,13 +1,13 @@
 package com.artemis;
 
+import com.artemis.annotations.Mapper;
+import com.artemis.utils.Bag;
+import com.artemis.utils.ImmutableBag;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.util.HashMap;
 import java.util.Map;
-
-import com.artemis.annotations.Mapper;
-import com.artemis.utils.Bag;
-import com.artemis.utils.ImmutableBag;
 
 /**
  * The primary instance for the framework. It contains all the managers.

@@ -1,12 +1,12 @@
 package com.artemis.managers;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import com.artemis.Entity;
 import com.artemis.Manager;
 import com.artemis.utils.Bag;
 import com.artemis.utils.ImmutableBag;
+
+import java.util.HashMap;
+import java.util.Map;
 
 
 /**

@@ -1,9 +1,9 @@
 package com.artemis;
 
+import com.artemis.utils.Bag;
+
 import java.util.BitSet;
 import java.util.UUID;
-
-import com.artemis.utils.Bag;
 
 /**
  * The entity class. Cannot be instantiated outside the framework, you must

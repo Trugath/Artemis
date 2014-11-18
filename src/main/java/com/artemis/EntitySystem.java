@@ -1,10 +1,10 @@
 package com.artemis;
 
-import java.util.BitSet;
-import java.util.HashMap;
-
 import com.artemis.utils.Bag;
 import com.artemis.utils.ImmutableBag;
+
+import java.util.BitSet;
+import java.util.HashMap;
 
 /**
  * The most raw entity system. It should not typically be used, but you can create your own

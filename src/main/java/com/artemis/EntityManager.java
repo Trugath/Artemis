@@ -1,8 +1,8 @@
 package com.artemis;
 
-import java.util.BitSet;
-
 import com.artemis.utils.Bag;
+
+import java.util.BitSet;
 
 public class EntityManager extends Manager {
 	private final Bag<Entity> entities;
