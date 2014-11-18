@@ -23,7 +23,7 @@ public class World {
 	private final EntityManager em;
 	private final ComponentManager cm;
 
-	public double delta;
+	private double delta;
 	private final Bag<Entity> added;
 	private final Bag<Entity> changed;
 	private final Bag<Entity> deleted;
