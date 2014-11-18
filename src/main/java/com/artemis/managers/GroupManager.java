@@ -112,8 +112,9 @@ public class GroupManager extends Manager {
 	 * @return true if it is in any group, false if none.
 	 */
 	public boolean isInAnyGroup(Entity e) {
-		return !getGroups(e).isEmpty();
-	}
+        ImmutableBag<String> bag = getGroups(e);
+        return bag != null && !bag.isEmpty();
+    }
 	
 	/**
 	 * Check if the entity is in the supplied group.
@@ -121,9 +122,9 @@ public class GroupManager extends Manager {
 	 * @param e the entity to check for.
 	 * @return true if the entity is in the supplied group, false if not.
 	 */
-	public boolean inInGroup(Entity e, String group) {
+	public boolean isInGroup(Entity e, String group) {
 		Bag<String> groups = groupsByEntity.get(e);
-		return groups.contains(group);
+		return groups != null && groups.contains(group);
 	}
 
 	@Override
