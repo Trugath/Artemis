@@ -41,17 +41,17 @@ public abstract class DelayedEntityProcessingSystem extends EntitySystem {
 
 	@Override
 	protected final void processEntities(ImmutableBag<Entity> entities) {
-		for (int i = 0, s = entities.size(); s > i; i++) {
-			Entity entity = entities.get(i);
-			processDelta(entity, acc);
+        double tempAcc = acc;
+        stop();
+		for (Entity entity : entities) {
+			processDelta(entity, tempAcc);
             double remaining = getRemainingDelay(entity);
-			if(remaining <= 0) {
-				processExpired(entity);
-			} else {
-				offerDelay(remaining);
-			}
+            if (remaining <= 0.0) {
+                processExpired(entity);
+            } else {
+                offerDelay(remaining);
+            }
 		}
-		stop();
 	}
 	
 	@Override
@@ -59,7 +59,10 @@ public abstract class DelayedEntityProcessingSystem extends EntitySystem {
         double delay = getRemainingDelay(e);
 		if(delay > 0) {
 			offerDelay(delay);
-		}
+		} else {
+            running = true;
+            this.delay = 0;
+        }
 	}
 	
 	/**
