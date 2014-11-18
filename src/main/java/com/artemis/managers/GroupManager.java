@@ -112,7 +112,7 @@ public class GroupManager extends Manager {
 	 * @return true if it is in any group, false if none.
 	 */
 	public boolean isInAnyGroup(Entity e) {
-		return getGroups(e) != null;
+		return !getGroups(e).isEmpty();
 	}
 	
 	/**

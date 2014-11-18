@@ -101,7 +101,7 @@ public abstract class EntitySystem implements EntityObserver {
 	 * @param e entity to check
 	 */
 	protected final void check(Entity e) {
-		if(dummy) {
+		if(dummy || e == null) {
 			return;
 		}
 		
@@ -162,14 +162,14 @@ public abstract class EntitySystem implements EntityObserver {
 	
 	@Override
 	public final void deleted(Entity e) {
-		if(e.getSystemBits().get(systemIndex)) {
+		if(e != null && e.getSystemBits().get(systemIndex)) {
 			removeFromSystem(e);
 		}
 	}
 	
 	@Override
 	public final void disabled(Entity e) {
-		if(e.getSystemBits().get(systemIndex)) {
+		if(e != null && e.getSystemBits().get(systemIndex)) {
 			removeFromSystem(e);
 		}
 	}
