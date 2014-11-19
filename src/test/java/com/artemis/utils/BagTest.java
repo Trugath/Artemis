@@ -89,6 +89,7 @@ public class BagTest {
         assertTrue(b.isEmpty());
     }
 
+    // https://code.google.com/p/artemis-framework/issues/detail?id=7
     @Test
     public void issueSeven() {
         // Fill a bag with 10 elements

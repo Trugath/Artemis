@@ -39,7 +39,7 @@ public class Bag<E> implements ImmutableBag<E>, Set<E> {
 	 * @return element that was removed from the Bag
 	 */
 	public E remove(int index) {
-        modCount++;
+        ++modCount;
 		E e = data[index]; // make copy of element to remove so it can be returned
         data[index] = null; // set the value to null
 
@@ -59,7 +59,7 @@ public class Bag<E> implements ImmutableBag<E>, Set<E> {
 	 */
 	public E removeLast() {
 		if(size > 0) {
-            modCount++;
+            ++modCount;
 			E e = data[--size];
 			data[size] = null;
 			return e;
@@ -86,7 +86,7 @@ public class Bag<E> implements ImmutableBag<E>, Set<E> {
             E e2 = data[i];
 
             if (o == e2) {
-                modCount++;
+                ++modCount;
                 data[i] = data[--size]; // overwrite item to remove with last element
                 data[size] = null; // null last element, so gc can do its work
                 return true;
@@ -263,7 +263,7 @@ public class Bag<E> implements ImmutableBag<E>, Set<E> {
 		if(index >= data.length) {
 			grow(index*2);
 		}
-        modCount++;
+        ++modCount;
 		size = Math.max(index+1, size);
 		data[index] = e;
 	}
@@ -293,7 +293,7 @@ public class Bag<E> implements ImmutableBag<E>, Set<E> {
 	public void clear() {
 		// null all elements so gc can clean up
 		for (int i = 0; i < size; i++) {
-            modCount++;
+            ++modCount;
 			data[i] = null;
 		}
 

@@ -27,14 +27,14 @@ public class EntityManager extends Manager {
 
 	protected Entity createEntityInstance() {
 		Entity e = new Entity(world, identifierPool.checkOut());
-		created++;
+		++created;
 		return e;
 	}
 	
 	@Override
 	public void added(Entity e) {
-		active++;
-		added++;
+		++active;
+		++added;
 		entities.set(e.getId(), e);
 	}
 	
@@ -56,8 +56,8 @@ public class EntityManager extends Manager {
 		
 		identifierPool.checkIn(e.getId());
 		
-		active--;
-		deleted++;
+		--active;
+		++deleted;
 	}
 
 
