@@ -203,17 +203,25 @@ public abstract class EntitySystem implements EntityObserver {
 	 * Only used internally in EntitySystem.
 	 */
 	private static class SystemIndexManager {
-		private static int INDEX = 0;
-		private static final HashMap<Class<? extends EntitySystem>, Integer> indices = new HashMap<>();
-		
-		private static int getIndexFor(Class<? extends EntitySystem> es){
-			Integer index = indices.get(es);
-			if(index == null) {
-				index = INDEX++;
-				indices.put(es, index);
+		private static class Indices {
+			public int INDEX = 0;
+			public final HashMap<Class<? extends EntitySystem>, Integer> indices = new HashMap<>();
+		}
+
+		private static final ThreadLocal<Indices> threadLocalIndices = new ThreadLocal<Indices>() {
+			@Override
+			protected Indices initialValue() {
+				return new Indices();
+			}
+		};
+
+		private static int getIndexFor(Class<? extends EntitySystem> es) {
+			Integer index = threadLocalIndices.get().indices.get(es);
+			if (index == null) {
+				index = threadLocalIndices.get().INDEX++;
+				threadLocalIndices.get().indices.put(es, index);
 			}
 			return index;
 		}
 	}
-
 }
