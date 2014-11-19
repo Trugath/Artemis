@@ -1,10 +1,6 @@
 package com.artemis.utils;
 
-import java.util.Collection;
-import java.util.ConcurrentModificationException;
-import java.util.Iterator;
-import java.util.NoSuchElementException;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Collection type a bit like ArrayList but does not preserve the order of its
@@ -39,14 +35,18 @@ public class Bag<E> implements ImmutableBag<E>, Set<E> {
 	 * Removes the element at the specified position in this Bag. does this by
 	 * overwriting it was last element then removing last element
 	 * 
-	 * @param index
-	 *            the index of element to be removed
+	 * @param index the index of element to be removed
 	 * @return element that was removed from the Bag
 	 */
 	public E remove(int index) {
         modCount++;
 		E e = data[index]; // make copy of element to remove so it can be returned
-		data[index] = data[--size]; // overwrite item to remove with last element
+        data[index] = null; // set the value to null
+
+        // collapse end of Bag into the new null slot
+        while(index >= 0 && data[index] == null)
+		    data[index--] = data[--size]; // overwrite item to remove with last element
+
 		data[size] = null; // null last element, so gc can do its work
 		return e;
 	}
@@ -264,7 +264,7 @@ public class Bag<E> implements ImmutableBag<E>, Set<E> {
 			grow(index*2);
 		}
         modCount++;
-		size = index+1;
+		size = Math.max(index+1, size);
 		data[index] = e;
 	}
 

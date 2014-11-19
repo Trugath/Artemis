@@ -9,7 +9,9 @@ import org.junit.runner.JUnitCore;
 
 import java.util.Collections;
 import java.util.Set;
-import static org.junit.Assert.*;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Use guava to test the Bag implementation (as a Set)
@@ -76,5 +78,29 @@ public class BagTest {
             bag.add("" + (byte)(i + 64));
         }
         assertTrue(bag.getCapacity() >= 64);
+    }
+
+    // https://code.google.com/p/artemis-framework/issues/detail?id=6
+    @Test
+    public void issueSix() {
+        Bag<String> b = new Bag<String>();
+        b.set(5, "a");
+        b.remove(5);
+        assertTrue(b.isEmpty());
+    }
+
+    @Test
+    public void issueSeven() {
+        // Fill a bag with 10 elements
+        Bag<String> bag = new Bag<String>(0);
+        for(int i = 0; i < 64; ++i) {
+            bag.add("" + (byte)(i + 64));
+        }
+
+        // Call bag.set(4, newitem);
+        bag.set(4, "newItem");
+
+        // Check bag.size();
+        assertTrue(bag.size() >= 64);
     }
 }
