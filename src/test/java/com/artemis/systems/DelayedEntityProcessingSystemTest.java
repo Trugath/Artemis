@@ -67,10 +67,13 @@ public class DelayedEntityProcessingSystemTest {
     @Test
     public void singleAspectSystemTest() throws Exception {
 
-        World world = new World();
+        final World wld = new World();
         DelayedEntityProcessingSystem system = new DelayedEntityProcessingSystem(Aspect.getAspectForOne(DelayComponentOne.class, DelayComponentTwo.class)) {
-            @Mapper ComponentMapper<DelayComponentOne> oneMapper;
-            @Mapper ComponentMapper<DelayComponentTwo> twoMapper;
+
+            // test the mapper annotation while we are here
+            private @Mapper ComponentMapper<DelayComponentOne> oneMapper;
+            public @Mapper ComponentMapper<DelayComponentTwo> twoMapper;
+            @Mapper ComponentMapper<DelayComponentTwo> twoMapperSet = ComponentMapper.getFor(DelayComponentTwo.class, wld);
 
             @Override
             protected double getRemainingDelay(Entity e) {
@@ -100,33 +103,33 @@ public class DelayedEntityProcessingSystemTest {
                 offerDelay(result);
             }
         };
-        world.setSystem(system);
-        world.initialize();
+        wld.setSystem(system);
+        wld.initialize();
 
-        ComponentMapper<DelayComponentOne> oneMapper = ComponentMapper.getFor(DelayComponentOne.class, world);
-        ComponentMapper<DelayComponentTwo> twoMapper = ComponentMapper.getFor(DelayComponentTwo.class, world);
+        ComponentMapper<DelayComponentOne> oneMapper = ComponentMapper.getFor(DelayComponentOne.class, wld);
+        ComponentMapper<DelayComponentTwo> twoMapper = ComponentMapper.getFor(DelayComponentTwo.class, wld);
 
         // entity not captured by the system
-        Entity e1 = world.createEntity();
-        world.addEntity(e1);
+        Entity e1 = wld.createEntity();
+        wld.addEntity(e1);
 
         // entity captured by the system
-        Entity e2 = world.createEntity();
+        Entity e2 = wld.createEntity();
         e2.addComponent(new DelayComponentOne());
-        world.addEntity(e2);
+        wld.addEntity(e2);
 
         // entity captured by the system
-        Entity e3 = world.createEntity();
+        Entity e3 = wld.createEntity();
         e3.addComponent(new DelayComponentTwo());
-        world.addEntity(e3);
+        wld.addEntity(e3);
 
         // entity captured by the system
-        Entity e4 = world.createEntity();
+        Entity e4 = wld.createEntity();
         e4.addComponent(new DelayComponentOne());
         e4.addComponent(new DelayComponentTwo());
-        world.addEntity(e4);
+        wld.addEntity(e4);
 
-        world.process();
+        wld.process();
 
         assertFalse(system.getActives().contains(e1));
         assertTrue(system.getActives().contains(e2));
@@ -140,8 +143,8 @@ public class DelayedEntityProcessingSystemTest {
 
         assertEquals(system.getRemainingTimeUntilProcessing(), 1.0, 0.01);
 
-        world.setDelta(0.5);
-        world.process();
+        wld.setDelta(0.5);
+        wld.process();
 
         for( Entity e : system.getActives() ) {
             if(oneMapper.has(e))assertEquals(2.0, oneMapper.get(e).delay, 0.01);
@@ -150,8 +153,8 @@ public class DelayedEntityProcessingSystemTest {
 
         assertEquals(system.getRemainingTimeUntilProcessing(), 0.5, 0.01);
 
-        world.setDelta(0.5);
-        world.process();
+        wld.setDelta(0.5);
+        wld.process();
 
         for( Entity e : system.getActives() ) {
             if(oneMapper.has(e))assertEquals(1.0, oneMapper.get(e).delay, 0.01);
@@ -160,8 +163,8 @@ public class DelayedEntityProcessingSystemTest {
 
         assertEquals(system.getRemainingTimeUntilProcessing(), 1.0, 0.01);
 
-        world.setDelta(2.5);
-        world.process();
+        wld.setDelta(2.5);
+        wld.process();
 
         for( Entity e : system.getActives() ) {
             if(oneMapper.has(e))assertEquals(0.5, oneMapper.get(e).delay, 0.01);
@@ -170,11 +173,11 @@ public class DelayedEntityProcessingSystemTest {
 
         assertEquals(system.getRemainingTimeUntilProcessing(), 0.5, 0.01);
 
-        world.deleteEntity(e1);
-        world.deleteEntity(e2);
-        world.deleteEntity(e3);
-        world.deleteEntity(e4);
-        world.process();
+        wld.deleteEntity(e1);
+        wld.deleteEntity(e2);
+        wld.deleteEntity(e3);
+        wld.deleteEntity(e4);
+        wld.process();
 
         assertFalse(system.getActives().contains(e1));
         assertFalse(system.getActives().contains(e2));

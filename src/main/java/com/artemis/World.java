@@ -379,22 +379,38 @@ public class World {
 
 		public static void config(Object target, World world) {
 			try {
-				Class<?> clazz = target.getClass();
-				for (Field field : clazz.getDeclaredFields()) {
-					Mapper annotation = field.getAnnotation(Mapper.class);
-					if (annotation != null && Mapper.class.isAssignableFrom(Mapper.class)) {
-						ParameterizedType genericType = (ParameterizedType) field.getGenericType();
-						Class componentType = (Class) genericType.getActualTypeArguments()[0];
-
-						field.setAccessible(true);
-						field.set(target, world.getMapper(componentType));
-					}
-				}
+				configHelper (target, target.getClass (), world);
 			} catch (Exception e) {
 				throw new RuntimeException("Error while setting component mappers", e);
 			}
 		}
 
+		private static void configHelper(Object target, Class<?> clazz, World world) {
+			try {
+				for (Field field : clazz.getDeclaredFields()) {
+					Mapper annotation = field.getAnnotation(Mapper.class);
+					if (annotation != null && Mapper.class.isAssignableFrom(Mapper.class)) {
+						ParameterizedType genericType = (ParameterizedType) field.getGenericType();
+
+						@SuppressWarnings("unchecked")
+						Class<? extends Component> componentType = (Class<? extends Component>) genericType.getActualTypeArguments()[0];
+
+						boolean accessible = field.isAccessible();
+						field.setAccessible(true);
+						if(field.get(target) == null)
+							field.set(target, world.getMapper(componentType));
+						field.setAccessible(accessible);
+					}
+				}
+			} catch (Exception e) {
+				throw new RuntimeException("Error while setting component mappers", e);
+			}
+
+			Class< ? > superClazz = clazz.getSuperclass ();
+			if (superClazz != null)
+				configHelper (target, superClazz, world);
+		}
 	}
+
 
 }
