@@ -36,6 +36,17 @@ public class EntityProcessingSystemTest {
             cmp = cmpMapper.get(e);
         }
 
+        /**
+         * This is called in two situations, once when the complete entity with components is being deleted
+         * and once when the the final component is removed that this manager is interested in
+         *
+         * Without keeping all components around after they are removed the user is not able to consistently
+         * query for the component that they want
+         *
+         * An alternative for the user would be to add an onAdded and onRemoved methed into the abstract
+         * base class for Component
+         *
+         */
         protected void removed(Entity e) {
             removedTriggered = true;
             // assertTrue(cmpMapper.has(e)); <-- User wants to be able to get the component from the removed entity
