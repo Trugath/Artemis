@@ -2,6 +2,7 @@ package com.artemis.managers;
 
 import com.artemis.Entity;
 import com.artemis.Manager;
+import com.artemis.utils.Bag;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -17,7 +18,7 @@ import java.util.Map;
  */
 public class TagManager extends Manager {
 	private final Map<String, Entity> entitiesByTag;
-	private final Map<Entity, String> tagsByEntity;
+	private final Map<Entity, Bag<String>> tagsByEntity;
 
 	public TagManager() {
 		entitiesByTag = new HashMap<>();
@@ -25,12 +26,21 @@ public class TagManager extends Manager {
 	}
 
 	public void register(String tag, Entity e) {
+		if(tag == null || e == null)
+			return;
+
 		entitiesByTag.put(tag, e);
-		tagsByEntity.put(e, tag);
+		if(!tagsByEntity.containsKey(e))
+			tagsByEntity.put(e, new Bag<String>());
+		tagsByEntity.get(e).add(tag);
 	}
 
 	public void unregister(String tag) {
-		tagsByEntity.remove(entitiesByTag.remove(tag));
+		Entity e = entitiesByTag.remove(tag);
+		Bag<String> bag = tagsByEntity.get(e);
+		bag.remove(tag);
+		if(bag.isEmpty())
+			tagsByEntity.remove(e);
 	}
 
 	public boolean isRegistered(String tag) {
@@ -42,14 +52,15 @@ public class TagManager extends Manager {
 	}
 	
 	public Collection<String> getRegisteredTags() {
-		return tagsByEntity.values();
+		return entitiesByTag.keySet();
 	}
 	
 	@Override
 	public void deleted(Entity e) {
-		String removedTag = tagsByEntity.remove(e);
-		if(removedTag != null) {
-			entitiesByTag.remove(removedTag);
+		if(tagsByEntity.containsKey(e)) {
+			for (String removedTag : tagsByEntity.remove(e)) {
+				entitiesByTag.remove(removedTag);
+			}
 		}
 	}
 
