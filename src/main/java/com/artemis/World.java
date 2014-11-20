@@ -8,6 +8,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * The primary instance for the framework. It contains all the managers.
@@ -211,6 +212,19 @@ public class World {
 	}
 
 	/**
+	 * Create and return a new or reused entity instance.
+	 * Will NOT add the entity to the world, use World.addEntity(Entity) for that.
+	 *
+	 * @return entity
+	 */
+	public Entity createEntity(UUID uuid) {
+		Entity e = em.createEntityInstance();
+		e.setUuid(uuid);
+		return e;
+	}
+
+
+	/**
 	 * Get a entity having the specified id.
 	 * 
 	 * @param entityId
@@ -267,7 +281,7 @@ public class World {
 		systems.remove(system.getClass());
 		systemsBag.remove(system);
 	}
-	
+
 	private void notifySystems(Performer performer, Entity e) {
 		for(EntitySystem system : systemsBag) {
 			performer.perform(system, e);
@@ -365,7 +379,6 @@ public class World {
 	public <T extends Component> ComponentMapper<T> getMapper(Class<T> type) {
 		return ComponentMapper.getFor(type, this);
 	}
-	
 
 	/*
 	 * Only used internally to maintain clean code.

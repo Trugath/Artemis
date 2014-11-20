@@ -25,13 +25,7 @@ public class GroupManager extends Manager {
 		entitiesByGroup = new HashMap<>();
 		groupsByEntity = new HashMap<>();
 	}
-	
 
-	@Override
-	protected void initialize() {
-	}
-	
-	
 	/**
 	 * Set the group of the entity.
 	 * 

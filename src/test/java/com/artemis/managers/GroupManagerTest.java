@@ -12,7 +12,6 @@ public class GroupManagerTest {
     @Test
     public void testEmpty() throws Exception {
         GroupManager gm = new GroupManager();
-        gm.initialize();
         gm.add(null, null);
         gm.remove(null, null);
         gm.removeFromAllGroups(null);

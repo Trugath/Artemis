@@ -30,7 +30,7 @@ public class EntityManager extends Manager {
 		++created;
 		return e;
 	}
-	
+
 	@Override
 	public void added(Entity e) {
 		++active;

@@ -10,7 +10,7 @@ package com.artemis;
 public abstract class Manager implements EntityObserver {
 	protected World world;
 	
-	protected abstract void initialize();
+	protected void initialize() {};
 
 	protected void setWorld(World world) {
 		this.world = world;

@@ -27,11 +27,7 @@ public class TeamManager extends Manager {
 		playersByTeam = new HashMap<>();
 		teamByPlayer = new HashMap<>();
 	}
-	
-	@Override
-	protected void initialize() {
-	}
-	
+
 	public String getTeam(String player) {
 		return teamByPlayer.get(player);
 	}

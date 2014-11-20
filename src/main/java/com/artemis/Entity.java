@@ -1,5 +1,6 @@
 package com.artemis;
 
+import com.artemis.managers.UuidEntityManager;
 import com.artemis.utils.Bag;
 
 import java.util.BitSet;
@@ -249,12 +250,20 @@ public final class Entity {
 	}
 
 	/**
+	 * Get the UUID for this entity.
+	 */
+	public void setUuid(UUID uuid) {
+		this.uuid = uuid;
+		UuidEntityManager manager = world.getManager(UuidEntityManager.class);
+		if(manager != null)
+			manager.setUuid(this, uuid);
+	}
+
+	/**
 	 * Returns the world this entity belongs to.
 	 * @return world of entity.
 	 */
 	public World getWorld() {
 		return world;
 	}
-
-
 }

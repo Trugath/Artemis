@@ -66,9 +66,4 @@ public class TagManager extends Manager {
 			}
 		}
 	}
-
-	@Override
-	protected void initialize() {
-	}
-
 }
