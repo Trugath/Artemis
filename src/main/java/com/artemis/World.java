@@ -62,6 +62,7 @@ public class World {
 	 */
 	public void initialize() {
 		for (Manager m : managersBag) {
+			ComponentMapperInitHelper.config(m, this);
 			m.initialize();
 		}
 		
