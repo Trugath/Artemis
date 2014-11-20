@@ -1,6 +1,7 @@
 package com.artemis;
 
 import com.artemis.annotations.Mapper;
+import com.artemis.managers.UuidEntityManager;
 import com.artemis.utils.Bag;
 import com.artemis.utils.ImmutableBag;
 
@@ -36,6 +37,9 @@ public class World {
 	
 	private final Map<Class<?>, EntitySystem> systems;
 	private final Bag<EntitySystem> systemsBag;
+
+	private boolean hasUuidManager = false;
+	boolean hasUuidManager() { return hasUuidManager; }
 
 	public World() {
 		managers = new HashMap<>();
@@ -106,6 +110,8 @@ public class World {
 		managers.put(manager.getClass(), manager);
 		managersBag.add(manager);
 		manager.setWorld(this);
+		if(manager instanceof UuidEntityManager)
+			hasUuidManager = true;
 		return manager;
 	}
 
@@ -128,6 +134,8 @@ public class World {
 	public void deleteManager(Manager manager) {
 		managers.remove(manager.getClass());
 		managersBag.remove(manager);
+		if(manager instanceof UuidEntityManager)
+			hasUuidManager = false;
 	}
 
 	
@@ -208,7 +216,11 @@ public class World {
 	 * @return entity
 	 */
 	public Entity createEntity() {
-		return em.createEntityInstance();
+		Entity e = em.createEntityInstance();
+		UuidEntityManager manager = getManager(UuidEntityManager.class);
+		if(manager != null)
+			manager.setUuid(e, e.getUuid());
+		return e;
 	}
 
 	/**
@@ -220,6 +232,9 @@ public class World {
 	public Entity createEntity(UUID uuid) {
 		Entity e = em.createEntityInstance();
 		e.setUuid(uuid);
+		UuidEntityManager manager = getManager(UuidEntityManager.class);
+		if(manager != null)
+			manager.setUuid(e, uuid);
 		return e;
 	}
 

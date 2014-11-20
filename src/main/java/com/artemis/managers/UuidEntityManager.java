@@ -18,11 +18,6 @@ public class UuidEntityManager extends Manager {
 	}
 
 	@Override
-	public void added(Entity e) {
-		setUuid(e, e.getUuid());
-	}
-
-	@Override
 	public void deleted(Entity e) {
 		UUID uuid = entityToUuid.get(e.getId());
 		if (uuid == null)

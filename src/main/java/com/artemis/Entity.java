@@ -14,8 +14,6 @@ import java.util.UUID;
  * 
  */
 public final class Entity {
-	private UUID uuid;
-
 	private final int id;
 	private final BitSet componentBits;
 	private final BitSet systemBits;
@@ -69,7 +67,8 @@ public final class Entity {
 	protected void reset() {
 		systemBits.clear();
 		componentBits.clear();
-		uuid = UUID.randomUUID();
+		if(world.hasUuidManager())
+			world.getManager(UuidEntityManager.class).setUuid(this, UUID.randomUUID());
 	}
 
 	@Override
@@ -246,17 +245,20 @@ public final class Entity {
 	 * @return uuid instance for this entity.
 	 */
 	public UUID getUuid() {
-		return uuid;
+		if(!world.hasUuidManager())
+			throw new IllegalStateException();
+
+		return world.getManager(UuidEntityManager.class).getUuid(this);
 	}
 
 	/**
 	 * Get the UUID for this entity.
 	 */
 	public void setUuid(UUID uuid) {
-		this.uuid = uuid;
-		UuidEntityManager manager = world.getManager(UuidEntityManager.class);
-		if(manager != null)
-			manager.setUuid(this, uuid);
+		if(!world.hasUuidManager())
+			throw new IllegalStateException();
+
+		world.getManager(UuidEntityManager.class).setUuid(this, uuid);
 	}
 
 	/**

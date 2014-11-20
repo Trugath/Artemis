@@ -12,23 +12,22 @@ import static org.junit.Assert.*;
 @SuppressWarnings("static-method")
 public class UuidEntityManagerTest {
 	
-	@Test
+	@Test(expected=IllegalStateException.class)
 	public void throw_exception_missing_uuid_manager() {
 		World world = new World();
 		world.initialize();
-		
 		Entity entity = world.createEntity();
-		
 		Assert.assertNotNull(entity.getUuid());
 	}
 	
 	@Test
 	public void uuid_assigned() {
 		World world = new World();
-		world.setManager(new UuidEntityManager());
+		UuidEntityManager uuidManager = world.setManager(new UuidEntityManager());
 		world.initialize();
 		
 		Entity entity = world.createEntity();
+		assertEquals(entity.getUuid(), uuidManager.getUuid(entity));
 		
 		assertNotNull(entity.getUuid());
 		UUID uuid1 = entity.getUuid();

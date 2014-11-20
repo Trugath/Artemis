@@ -1,5 +1,6 @@
 package com.artemis;
 
+import com.artemis.managers.UuidEntityManager;
 import com.artemis.utils.Bag;
 import org.junit.After;
 import org.junit.Before;
@@ -50,6 +51,7 @@ public class EntityTest {
 
     @Test
     public void testReset() throws Exception {
+        world.setManager(new UuidEntityManager());
         UUID uuid = entity.getUuid();
         entity.reset();
         assertNotEquals(entity.getUuid(), uuid);
