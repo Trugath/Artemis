@@ -8,8 +8,8 @@ import java.util.*;
  */
 
 public class Bag<E> implements ImmutableBag<E>, Set<E> {
-	private E[] data;
-	private int size = 0;
+	protected E[] data;
+    protected int size = 0;
 
     transient volatile int modCount;
 
@@ -180,6 +180,25 @@ public class Bag<E> implements ImmutableBag<E>, Set<E> {
 	public E get(int index) {
 		return data[index];
 	}
+
+    /**
+     * Returns the element at the specified position in Bag. This method
+     * ensures that the bag grows if the requested index is outside the bounds
+     * of the current backing array.
+     *
+     * @param index
+     *			index of the element to return
+     *
+     * @return the element at the specified position in bag
+     *
+     */
+    public E safeGet(int index) {
+        if(index >= data.length) {
+            grow((index * 7) / 4 + 1);
+        }
+
+        return data[index];
+    }
 
 	/**
 	 * Returns the number of elements in this bag.

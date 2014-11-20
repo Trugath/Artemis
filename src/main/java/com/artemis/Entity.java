@@ -6,266 +6,303 @@ import com.artemis.utils.Bag;
 import java.util.BitSet;
 import java.util.UUID;
 
+
 /**
- * The entity class. Cannot be instantiated outside the framework, you must
- * create new entities using World.
+ * The entity class.
+ * <p>
+ * Cannot be instantiated outside the framework, you must create new entities
+ * using World. The world creates entities via it's entity manager.
+ * </p>
  * 
  * @author Arni Arent
- * 
  */
 public final class Entity {
-	private final int id;
-	private final BitSet componentBits;
-	private final BitSet systemBits;
 
+	/** The entities identifier in the world. */
+	private final int id;
+	/** The world this entity belongs to. */
 	private final World world;
-	private final EntityManager entityManager;
-	private final ComponentManager componentManager;
-	
+
+	/**
+	 * Creates a new {@link Entity} instance in the given world.
+	 * <p>
+	 * This will only be called by the world via it's entity manager,
+	 * and not directly by the user, as the world handles creation of entities.
+	 * </p>
+	 *
+	 * @param world
+	 *			the world to create the entity in
+	 * @param id
+	 *			the id to set
+	 */
 	protected Entity(World world, int id) {
-		this.world = world;
-		this.id = id;
-		this.entityManager = world.getEntityManager();
-		this.componentManager = world.getComponentManager();
-		systemBits = new BitSet();
-		componentBits = new BitSet();
-		
-		reset();
+		this(world, id, null);
 	}
 
 	/**
-	 * The internal id for this entity within the framework. No other entity
-	 * will have the same ID, but ID's are however reused so another entity may
-	 * acquire this ID if the previous entity was deleted.
+	 * Creates a new {@link Entity} instance in the given world.
+	 * <p>
+	 * This will only be called by the world via it's entity manager,
+	 * and not directly by the user, as the world handles creation of entities.
+	 * </p>
+	 *
+	 * @param world
+	 *			the world to create the entity in
+	 * @param id
+	 *			the id to set
+	 * @param uuid
+	 *			the UUID to set
+	 */
+	protected Entity(World world, int id, UUID uuid) {
+		this.world = world;
+		this.id = id;
+		
+		if (uuid != null && world.hasUuidManager())
+			world.getManager(UuidEntityManager.class).setUuid(this, uuid);
+	}
+
+	
+	/**
+	 * The internal id for this entity within the framework.
+	 * <p>
+	 * No other entity will have the same ID, but ID's are however reused so
+	 * another entity may acquire this ID if the previous entity was deleted.
+	 * </p>
 	 * 
-	 * @return id of the entity.
+	 * @return id of the entity
 	 */
 	public int getId() {
 		return id;
 	}
 
 	/**
-	 * Returns a BitSet instance containing bits of the components the entity possesses.
-	 * @return
+	 * Returns a BitSet instance containing bits of the components the entity
+	 * possesses.
+	 *
+	 * @return a BitSet containing the entities component bits
 	 */
 	protected BitSet getComponentBits() {
-		return componentBits;
+		return world.getEntityManager().componentBits(this);
 	}
 	
-	/**
-	 * Returns a BitSet instance containing bits of the components the entity possesses.
-	 * @return
-	 */
-	protected BitSet getSystemBits() {
-		return systemBits;
+	public EntityEdit edit() {
+		return world.editPool.obtainEditor(this);
 	}
-
-	/**
-	 * Make entity ready for re-use.
-	 * Will generate a new uuid for the entity.
-	 */
-	protected void reset() {
-		systemBits.clear();
-		componentBits.clear();
-		if(world.hasUuidManager())
-			world.getManager(UuidEntityManager.class).setUuid(this, UUID.randomUUID());
-	}
+	
 
 	@Override
 	public String toString() {
 		return "Entity[" + id + "]";
 	}
+	
+	/**
+	 * @deprecated See {@link Entity#edit()}
+	 */
+	@Deprecated
+	public <T extends Component> T createComponent(Class<T> componentKlazz) {
+		return edit().create(componentKlazz);
+	}
 
 	/**
-	 * Add a component to this entity.
-	 * 
-	 * @param component to add to this entity
-	 * 
-	 * @return this entity for chaining.
+	 * @deprecated See {@link Entity#edit()}
 	 */
+	@Deprecated
 	public Entity addComponent(Component component) {
-		addComponent(component, ComponentType.getTypeFor(component.getClass()));
+		edit().add(component);
 		return this;
 	}
 	
 	/**
-	 * Faster adding of components into the entity. Not neccessery to use this, but
-	 * in some cases you might need the extra performance.
-	 * 
-	 * @param component the component to add
-	 * @param type of the component
-	 * 
-	 * @return this entity for chaining.
+	 * @deprecated See {@link Entity#edit()}
 	 */
+	@Deprecated
 	public Entity addComponent(Component component, ComponentType type) {
-		componentManager.addComponent(this, type, component);
+		edit().add(component, type);
 		return this;
 	}
 
 	/**
-	 * Removes the component from this entity.
-	 * 
-	 * @param component to remove from this entity.
-	 * 
-	 * @return this entity for chaining.
+	 * @deprecated See {@link Entity#edit()}
 	 */
+	@Deprecated
 	public Entity removeComponent(Component component) {
-		removeComponent(component.getClass());
+		edit().remove(component);
 		return this;
 	}
 
 	/**
-	 * Faster removal of components from a entity.
-	 * 
-	 * @param component to remove from this entity.
-	 * 
-	 * @return this entity for chaining.
+	 * @deprecated See {@link Entity#edit()}
 	 */
-	public Entity removeComponent(ComponentType component) {
-		componentManager.removeComponent(this, component);
+	@Deprecated
+	public Entity removeComponent(ComponentType type) {
+		edit().remove(type);
 		return this;
 	}
 	
 	/**
-	 * Remove component by its type.
-	 * @param type
-	 * 
-	 * @return this entity for chaining.
+	 * @deprecated See {@link Entity#edit()}
 	 */
+	@Deprecated
 	public Entity removeComponent(Class<? extends Component> type) {
-		removeComponent(ComponentType.getTypeFor(type));
+		edit().remove(type);
 		return this;
 	}
 
 	/**
-	 * Checks if the entity has been added to the world and has not been deleted from it.
+	 * Checks if the entity has been added to the world and has not been
+	 * deleted from it.
+	 * <p>
 	 * If the entity has been disabled this will still return true.
-	 * 
-	 * @return if it's active.
+	 * </p>
+	 *
+	 * @return {@code true} if it's active
 	 */
 	public boolean isActive() {
-		return entityManager.isActive(id);
+		return world.getEntityManager().isActive(id);
 	}
 	
 	/**
 	 * Will check if the entity is enabled in the world.
-	 * By default all entities that are added to world are enabled,
-	 * this will only return false if an entity has been explicitly disabled.
+	 * <p>
+	 * By default all entities that are added to world are enabled, this will
+	 * only return false if an entity has been explicitly disabled.
+	 * </p>
 	 * 
-	 * @return if it's enabled
+	 * @return {@code true} if it's enabled
+	 * @deprecated use components to implement state instead.
 	 */
+	@Deprecated
 	public boolean isEnabled() {
-		return entityManager.isEnabled(id);
+		return world.getEntityManager().isEnabled(id);
 	}
 	
 	/**
-	 * This is the preferred method to use when retrieving a component from a
-	 * entity. It will provide good performance.
-	 * But the recommended way to retrieve components from an entity is using
-	 * the ComponentMapper.
+	 * Retrieves component from this entity.
+	 * <p>
+	 * It will provide good performance. But the recommended way to retrieve
+	 * components from an entity is using the ComponentMapper.
+	 * </p>
 	 * 
 	 * @param type
-	 *            in order to retrieve the component fast you must provide a
-	 *            ComponentType instance for the expected component.
+	 *			in order to retrieve the component fast you must provide a
+	 *			ComponentType instance for the expected component
+	 *
 	 * @return
 	 */
 	public Component getComponent(ComponentType type) {
-		return componentManager.getComponent(this, type);
+		return world.getComponentManager().getComponent(this, type);
 	}
 
 	/**
-	 * Slower retrieval of components from this entity. Minimize usage of this,
-	 * but is fine to use e.g. when creating new entities and setting data in
-	 * components.
-	 * 
+	 * Slower retrieval of components from this entity.
+	 * <p>
+	 * Minimize usage of this, but is fine to use e.g. when creating new
+	 * entities and setting data in components.
+	 * </p>
+	 *
 	 * @param <T>
-	 *            the expected return component type.
+	 *			the expected return component class type
 	 * @param type
-	 *            the expected return component type.
-	 * @return component that matches, or null if none is found.
+	 *			the expected return component class type
+	 *
+	 * @return component that matches, or null if none is found
 	 */
+	@SuppressWarnings("unchecked")
 	public <T extends Component> T getComponent(Class<T> type) {
-		return type.cast(getComponent(ComponentType.getTypeFor(type)));
+		ComponentTypeFactory tf = world.getComponentManager().typeFactory;
+		return (T)getComponent(tf.getTypeFor(type));
 	}
 
 	/**
 	 * Returns a bag of all components this entity has.
-	 * You need to reset the bag yourself if you intend to fill it more than once.
+	 * <p>
+	 * You need to reset the bag yourself if you intend to fill it more than
+	 * once.
+	 * </p>
 	 * 
-	 * @param fillBag the bag to put the components into.
-	 * @return the fillBag with the components in.
+	 * @param fillBag
+	 *			the bag to put the components into
+	 *
+	 * @return the fillBag containing the components
 	 */
 	public Bag<Component> getComponents(Bag<Component> fillBag) {
-		return componentManager.getComponentsFor(this, fillBag);
+		return world.getComponentManager().getComponentsFor(this, fillBag);
 	}
 
 	/**
-	 * Refresh all changes to components for this entity. After adding or
-	 * removing components, you must call this method. It will update all
-	 * relevant systems. It is typical to call this after adding components to a
-	 * newly created entity.
+	 * @deprecated Automatically managed.
 	 */
-	public void addToWorld() {
-		world.addEntity(this);
-	}
+	@Deprecated
+	public void addToWorld() {}
 	
 	/**
-	 * This entity has changed, a component added or deleted.
+	 * @deprecated Automatically managed.
 	 */
-	public void changedInWorld() {
-		world.changedEntity(this);
-	}
+	@Deprecated
+	public void changedInWorld() {}
 
 	/**
 	 * Delete this entity from the world.
 	 */
 	public void deleteFromWorld() {
-		world.deleteEntity(this);
+		edit().deleteEntity();
 	}
 	
 	/**
 	 * (Re)enable the entity in the world, after it having being disabled.
+	 * <p>
 	 * Won't do anything unless it was already disabled.
+	 * </p>
+	 * @deprecated create your own components to track state.
 	 */
+	@Deprecated
 	public void enable() {
 		world.enable(this);
 	}
 	
 	/**
-	 * Disable the entity from being processed. Won't delete it, it will
-	 * continue to exist but won't get processed.
+	 * Disable the entity from being processed.
+	 * <p>
+	 * Won't delete it, it will continue to exist but won't get processed.
+	 * </p>
+	 * @deprecated create your own components to track state.
 	 */
+	@Deprecated
 	public void disable() {
 		world.disable(this);
 	}
 	
 	/**
 	 * Get the UUID for this entity.
+	 * <p>
 	 * This UUID is unique per entity (re-used entities get a new UUID).
-	 * @return uuid instance for this entity.
+	 * </p>
+	 *
+	 * @return uuid instance for this entity
 	 */
 	public UUID getUuid() {
-		if(!world.hasUuidManager())
-			throw new IllegalStateException();
-
+		if (!world.hasUuidManager())
+			throw new MundaneWireException(UuidEntityManager.class);
+		
 		return world.getManager(UuidEntityManager.class).getUuid(this);
 	}
-
-	/**
-	 * Get the UUID for this entity.
-	 */
+	
 	public void setUuid(UUID uuid) {
-		if(!world.hasUuidManager())
-			throw new IllegalStateException();
-
-		world.getManager(UuidEntityManager.class).setUuid(this, uuid);
+		if (world.hasUuidManager()) {
+			 world.getManager(UuidEntityManager.class).setUuid(this, uuid);
+		}
 	}
 
 	/**
 	 * Returns the world this entity belongs to.
-	 * @return world of entity.
+	 *
+	 * @return world of entity
 	 */
 	public World getWorld() {
 		return world;
+	}
+
+	public int getCompositionId() {
+		return world.getEntityManager().getIdentity(this);
 	}
 }

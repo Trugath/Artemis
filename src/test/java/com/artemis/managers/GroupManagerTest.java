@@ -2,12 +2,21 @@ package com.artemis.managers;
 
 import com.artemis.Entity;
 import com.artemis.World;
+import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class GroupManagerTest {
+
+    World world;
+
+    @Before
+    public void setup() {
+        world = new World();
+        world.initialize();
+    }
 
     @Test
     public void testEmpty() throws Exception {
@@ -19,14 +28,13 @@ public class GroupManagerTest {
         assertTrue(gm.getGroups(null).isEmpty());
         assertFalse(gm.isInAnyGroup(null));
         assertFalse(gm.isInGroup(null, null));
-        gm.deleted(null);
     }
 
     @Test
     public void testUnknownGroupEntity() throws Exception {
         GroupManager gm = new GroupManager();
-        gm.remove(new World().createEntity(), "b");
-        gm.removeFromAllGroups(new World().createEntity());
+        gm.remove(world.createEntity(), "b");
+        gm.removeFromAllGroups(world.createEntity());
         assertTrue(gm.getEntities("a").isEmpty());
     }
 

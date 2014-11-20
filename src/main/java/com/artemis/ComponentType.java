@@ -1,41 +1,82 @@
 package com.artemis;
 
-import java.util.HashMap;
+import com.artemis.utils.reflect.ClassReflection;
+import com.artemis.utils.reflect.Constructor;
 
+
+/**
+ * Identifies components in artemis without having to use classes.
+ * <p>
+ * This class keeps a list of all generated component types for fast
+ * retrieval.
+ * </p>
+ *
+ * @author Arni Arent
+ */
 public class ComponentType {
-	private static int INDEX = 0;
-
-	private final int index;
-	private final Class<? extends Component> type;
-
-	private ComponentType(Class<? extends Component> type) {
-		index = INDEX++;
-		this.type = type;
+	static enum Taxonomy {
+		BASIC, POOLED, PACKED;
 	}
 
+	
+	/** The class type of the component type. */
+	private final Class<? extends Component> type;
+	/** True if component type is a {@link PackedComponent} */
+	private final Taxonomy taxonomy;
+	
+	boolean packedHasWorldConstructor = false;
+	
+	private final int index;
+
+	ComponentType(Class<? extends Component> type, int index) {
+		
+		this.index = index;
+		this.type = type;
+		if (ClassReflection.isAssignableFrom(PackedComponent.class, type)) {
+			taxonomy = Taxonomy.PACKED;
+			packedHasWorldConstructor = hasWorldConstructor(type);
+		} else if (ClassReflection.isAssignableFrom(PooledComponent.class, type)) {
+			taxonomy = Taxonomy.POOLED;
+		} else {
+			taxonomy = Taxonomy.BASIC;
+		}
+	}
+
+	private static boolean hasWorldConstructor(Class<? extends Component> type) {
+		Constructor[] constructors = ClassReflection.getConstructors(type);
+		for (int i = 0; constructors.length > i; i++) {
+			@SuppressWarnings("rawtypes")
+			Class[] types = constructors[i].getParameterTypes();
+			if (types.length == 1 && types[0] == World.class)
+				return true;
+		}
+		
+		return false;
+	}
+
+	/**
+	 * Get the component type's index.
+	 *
+	 * @return the component types index
+	 */
 	public int getIndex() {
 		return index;
 	}
 	
-	@Override
-	public String toString() {
-		return "ComponentType["+type.getSimpleName()+"] ("+index+")";
+	protected Taxonomy getTaxonomy() {
+		return taxonomy;
 	}
-
-	private static final HashMap<Class<? extends Component>, ComponentType> componentTypes = new HashMap<>();
-
-	public static ComponentType getTypeFor(Class<? extends Component> c) {
-		ComponentType type = componentTypes.get(c);
-
-		if (type == null) {
-			type = new ComponentType(c);
-			componentTypes.put(c, type);
-		}
-
+	
+	public boolean isPackedComponent() {
+		return taxonomy == Taxonomy.PACKED;
+	}
+	
+	protected Class<? extends Component> getType() {
 		return type;
 	}
-
-	public static int getIndexFor(Class<? extends Component> c) {
-		return getTypeFor(c).getIndex();
+	
+	@Override
+	public String toString() {
+		return "ComponentType["+ ClassReflection.getSimpleName(type) +"] ("+index+")";
 	}
 }

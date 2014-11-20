@@ -16,7 +16,6 @@ public class PlayerManagerTest {
         assertTrue(pm.getEntitiesOfPlayer(null).isEmpty());
         pm.removeFromPlayer(null);
         assertTrue(pm.getPlayer(null) == null);
-        pm.deleted(null);
     }
 
     @Test

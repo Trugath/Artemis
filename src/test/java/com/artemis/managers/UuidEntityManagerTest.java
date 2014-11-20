@@ -1,6 +1,7 @@
 package com.artemis.managers;
 
 import com.artemis.Entity;
+import com.artemis.MundaneWireException;
 import com.artemis.World;
 import org.junit.Assert;
 import org.junit.Test;
@@ -12,7 +13,7 @@ import static org.junit.Assert.*;
 @SuppressWarnings("static-method")
 public class UuidEntityManagerTest {
 	
-	@Test(expected=IllegalStateException.class)
+	@Test(expected=MundaneWireException.class)
 	public void throw_exception_missing_uuid_manager() {
 		World world = new World();
 		world.initialize();

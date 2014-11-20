@@ -1,70 +1,99 @@
 package com.artemis;
 
-import com.artemis.utils.Bag;
-
-/**
- * High performance component retrieval from entities. Use this wherever you
- * need to retrieve components from entities often and fast.
- * 
- * @author Arni Arent
- *
- * @param <A> the class type of the component
- */
-public class ComponentMapper<A extends Component> {
-	private final ComponentType type;
-	private final Class<A> classType;
-	private final Bag<Component> components;
-
-	private ComponentMapper(Class<A> type, World world) {
-		this.type = ComponentType.getTypeFor(type);
-		components = world.getComponentManager().getComponentsByType(this.type);
-		this.classType = type;
-	}
-
+public abstract class ComponentMapper<A extends Component> {
 	/**
 	 * Fast but unsafe retrieval of a component for this entity.
-	 * No bounding checks, so this could throw an ArrayIndexOutOfBoundsExeption,
-	 * however in most scenarios you already know the entity possesses this component.
+	 * <p>
+	 * No bounding checks, so this could throw an
+	 * {@link ArrayIndexOutOfBoundsExeption}, however in most scenarios you
+	 * already know the entity possesses this component.
+	 * </p>
 	 * 
-	 * @param e the entity that should possess the component
+	 * @param e
+	 *			the entity that should possess the component
+	 *
 	 * @return the instance of the component
+	 *
+	 * @throws ArrayIndexOutOfBoundsException
 	 */
-	public A get(Entity e) {
-		return classType.cast(components.get(e.getId()));
-	}
+	public abstract A get(Entity e) throws ArrayIndexOutOfBoundsException;
+	
+	/**
+	 * Fast but unsafe retrieval of a component for this entity.
+	 * <p>
+	 * No bounding checks, so this could throw an
+	 * {@link ArrayIndexOutOfBoundsExeption}, however in most scenarios you
+	 * already know the entity possesses this component.
+	 * </p>
+	 * 
+	 * @param e
+	 *			the entity that should possess the component
+	 * @param forceNewInstance
+	 * 			Returns a new instance of the component (only applies to {@link PackedComponent}s)
+	 *
+	 * @return the instance of the component
+	 *
+	 * @throws ArrayIndexOutOfBoundsException
+	 */
+	public abstract A get(Entity e, boolean forceNewInstance) throws ArrayIndexOutOfBoundsException;
 
 	/**
 	 * Fast and safe retrieval of a component for this entity.
+	 * <p>
 	 * If the entity does not have this component then null is returned.
+	 * </p>
 	 * 
-	 * @param e the entity that should possess the component
+	 * @param e
+	 *			the entity that should possess the component
+	 *
 	 * @return the instance of the component
 	 */
-	public A getSafe(Entity e) {
-		if(components.isIndexWithinBounds(e.getId())) {
-			return classType.cast(components.get(e.getId()));
-		}
-		return null;
-	}
+	public abstract A getSafe(Entity e);
 	
 	/**
-	 * Checks if the entity has this type of component.
-	 * @param e the entity to check
-	 * @return true if the entity has this component type, false if it doesn't.
+	 * Fast and safe retrieval of a component for this entity.
+	 * <p>
+	 * If the entity does not have this component then null is returned.
+	 * </p>
+	 * 
+	 * @param e
+	 *			the entity that should possess the component
+	 * @param forceNewInstance
+	 * 			If true, returns a new instance of the component (only applies to {@link PackedComponent}s)
+	 *
+	 * @return the instance of the component
 	 */
-	public boolean has(Entity e) {
-		return getSafe(e) != null;		
-	}
+	public abstract A getSafe(Entity e, boolean forceNewInstance);
+
+	/**
+	 * Checks if the entity has this type of component.
+	 *
+	 * @param e
+	 *			the entity to check
+	 *
+	 * @return true if the entity has this component type, false if it doesn't
+	 */
+	public abstract boolean has(Entity e);
+
 
 	/**
 	 * Returns a component mapper for this type of components.
 	 * 
-	 * @param type the type of components this mapper uses.
-	 * @param world the world that this component mapper should use.
-	 * @return a new mapper.
+	 * @param <T>
+	 *			the class type of components
+	 * @param type
+	 *			the class of components this mapper uses
+	 * @param world
+	 *			the world that this component mapper should use
+	 *
+	 * @return a new mapper
 	 */
+	@SuppressWarnings("unchecked")
 	public static <T extends Component> ComponentMapper<T> getFor(Class<T> type, World world) {
-		return new ComponentMapper<>(type, world);
+		ComponentTypeFactory tf = world.getComponentManager().typeFactory;
+		if (tf.getTypeFor(type).isPackedComponent())
+			return (ComponentMapper<T>)PackedComponentMapper.create((Class<PackedComponent>)type, world);
+		else
+			return new BasicComponentMapper<T>(type, world);
 	}
-
 }

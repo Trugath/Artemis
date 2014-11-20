@@ -1,6 +1,6 @@
-package com.artemis;
+package com.artemis.annotations;
 
-import com.artemis.annotations.Wire;
+import com.artemis.*;
 import com.artemis.component.ComponentX;
 import com.artemis.component.ComponentY;
 import com.artemis.systems.EntityProcessingSystem;
@@ -26,9 +26,8 @@ public class MapperTest {
 		world.initialize();
 		
 		entity = world.createEntity();
-		EntityEdit edit = entity.edit();
-		edit.create(ComponentX.class);
-		edit.create(ComponentY.class);
+		entity.addComponent(new ComponentX());
+		entity.addComponent(new ComponentY());
 		
 		world.process();
 	}
@@ -50,11 +49,10 @@ public class MapperTest {
 		assertEquals(ComponentX.class, mappedSystem.x.get(entity).getClass());
 		assertEquals(ComponentY.class, mappedSystem.y.get(entity).getClass());
 	}
-	
-	@Wire
+
 	private static class MappedSystem extends EntityProcessingSystem {
-		private ComponentMapper<ComponentX> x;
-		private ComponentMapper<ComponentY> y;
+		@Mapper private ComponentMapper<ComponentX> x;
+		@Mapper private ComponentMapper<ComponentY> y;
 		
 		@SuppressWarnings("unchecked")
 		public MappedSystem() {
@@ -65,11 +63,10 @@ public class MapperTest {
 		protected void process(Entity e) {}
 		
 	}
-	
-	@Wire
+
 	private static class MappedManager extends Manager {
-		private ComponentMapper<ComponentX> x;
-		private ComponentMapper<ComponentY> y;
+		@Mapper private ComponentMapper<ComponentX> x;
+		@Mapper private ComponentMapper<ComponentY> y;
 		
 		@Override
 		protected void initialize() {}
