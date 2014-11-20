@@ -36,6 +36,9 @@ public class TagManager extends Manager {
 	}
 
 	public void unregister(String tag) {
+		if(tag == null)
+			return;
+
 		Entity e = entitiesByTag.remove(tag);
 		Bag<String> bag = tagsByEntity.get(e);
 		bag.remove(tag);

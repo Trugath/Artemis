@@ -53,6 +53,9 @@ public class TagManagerTest {
 
     @Test
     public void testUnregister() throws Exception {
+
+        tagManager.unregister(null);
+
         Entity e = world.createEntity();
         tagManager.register("a", e);
         assertTrue(tagManager.isRegistered("a"));
