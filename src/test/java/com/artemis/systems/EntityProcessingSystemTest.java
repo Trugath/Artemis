@@ -43,8 +43,8 @@ public class EntityProcessingSystemTest {
          * Without keeping all components around after they are removed the user is not able to consistently
          * query for the component that they want
          *
-         * An alternative for the user would be to add an onAdded and onRemoved methed into the abstract
-         * base class for Component
+         * An alternative for the user would be to add an onAdded and onRemoved method into the abstract
+         * base class for Component.
          *
          */
         protected void removed(Entity e) {
