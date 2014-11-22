@@ -38,25 +38,4 @@ public interface EntityObserver {
 	void deleted(Entity e);
 	void deleted(ImmutableBag<Entity> entities);
 
-	/**
-	 * Called when an entity the observer is interested in has been
-	 * (re)enabled.
-	 *
-	 * @param e
-	 *		the (re)enabled entity
-	 * @deprecated create your own components to track state.
-	 */
-	@Deprecated
-	void enabled(Entity e);
-
-	/**
-	 * Called when an entity the observer is interested in has been disabled.
-	 *
-	 * @param e
-	 *		the disabled entity
-	 * @deprecated create your own components to track state.
-	 */
-	@Deprecated
-	void disabled(Entity e);
-
 }

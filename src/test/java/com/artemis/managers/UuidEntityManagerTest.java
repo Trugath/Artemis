@@ -32,7 +32,7 @@ public class UuidEntityManagerTest {
 		
 		assertNotNull(entity.getUuid());
 		UUID uuid1 = entity.getUuid();
-		world.deleteEntity(entity);
+		entity.deleteFromWorld();
 		
 		world.process();
 		world.process();

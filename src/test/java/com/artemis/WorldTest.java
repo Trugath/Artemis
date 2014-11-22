@@ -21,12 +21,6 @@ public class WorldTest {
         double delta = Math.random();
         world.setDelta(delta);
         assertTrue(world.getDelta() == delta);
-
-        // null handling
-        world.addEntity(null);
-        world.changedEntity(null);
-        world.enable(null);
-        world.disable(null);
     }
 
     @Test
@@ -40,39 +34,19 @@ public class WorldTest {
         Entity e = world.createEntity();
         assertTrue(e != null);
 
-        // add
-        assertTrue(world.getEntity(e.getId()) == null);
-        assertTrue(!em.isActive(e.getId()));
-        world.addEntity(e);
         assertTrue(world.getEntity(e.getId()) == null);
         assertTrue(!em.isActive(e.getId()));
         world.process();
         assertTrue(world.getEntity(e.getId()) == e);
         assertTrue(em.isActive(e.getId()));
 
-/* regressed
-        // enable/disable/
-        assertTrue(em.isEnabled(e.getId()));
-        world.disable(e);
-        assertTrue(em.isEnabled(e.getId()));
-        assertTrue(em.isActive(e.getId()));
-        world.process();
-        assertTrue(!em.isEnabled(e.getId()));
-        assertTrue(em.isActive(e.getId()));
-        world.enable(e);
-        assertTrue(!em.isEnabled(e.getId()));
-        assertTrue(em.isActive(e.getId()));
-        world.process();
-        */
-
         // entity changed message
-        world.changedEntity(e);
         world.process();
 
         // delete entity
-        world.deleteEntity(e);
+        e.deleteFromWorld();
         assertTrue(world.getEntity(e.getId()) == e);
-        world.deleteEntity(e);
+        e.deleteFromWorld();
         assertTrue(world.getEntity(e.getId()) == e);
         world.process();
         assertTrue(world.getEntity(e.getId()) == null);

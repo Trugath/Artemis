@@ -93,19 +93,6 @@ public class EntityManager extends Manager {
 		entities.set(e.getId(), e);
 	}
 
-	/**
-	 * Sets the entity (re)enabled in the manager.
-	 *
-	 * @param e
-	 *			the entity to (re)enable
-	 * @deprecated create your own components to track state.
-	 */
-	@Override
-	@Deprecated
-	public void enabled(Entity e) {
-		disabled.clear(e.getId());
-	}
-
 	/** Refresh entity composition identity if it changed. */
 	void updateCompositionIdentity(EntityEdit edit) {
 		int identity = compositionIdentity(edit.componentBits);
@@ -125,17 +112,6 @@ public class EntityManager extends Manager {
 			highestSeenIdentity = identity;
 		}
 		return identity;
-	}
-	
-	/**
-	 * Sets the entity as disabled in the manager.
-	 *
-	 * @param e
-	 *			the entity to disable
-	 */
-	@Override @Deprecated
-	public void disabled(Entity e) {
-		disabled.set(e.getId());
 	}
 
 	/**
@@ -171,20 +147,7 @@ public class EntityManager extends Manager {
 		return (entities.size() > entityId) ? entities.get(entityId) != null : false; 
 	}
 	
-	/**
-	 * Check if the specified entityId is enabled.
-	 * 
-	 * @param entityId
-	 *			the entities id
-	 *
-	 * @return true if the entity is enabled, false if it is disabled
-	 * @deprecated create your own components to track state.
-	 */
-	@Deprecated
-	public boolean isEnabled(int entityId) {
-		return !disabled.get(entityId);
-	}
-	
+
 	/**
 	 * Get a entity with this id.
 	 * 

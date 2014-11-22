@@ -26,9 +26,11 @@ public class MapperTest {
 		world.initialize();
 		
 		entity = world.createEntity();
-		entity.addComponent(new ComponentX());
-		entity.addComponent(new ComponentY());
-		
+		entity
+				.edit()
+				.add(new ComponentX())
+				.add(new ComponentY());
+
 		world.process();
 	}
 	
@@ -50,9 +52,10 @@ public class MapperTest {
 		assertEquals(ComponentY.class, mappedSystem.y.get(entity).getClass());
 	}
 
+	@Wire
 	private static class MappedSystem extends EntityProcessingSystem {
-		@Mapper private ComponentMapper<ComponentX> x;
-		@Mapper private ComponentMapper<ComponentY> y;
+		private ComponentMapper<ComponentX> x;
+		private ComponentMapper<ComponentY> y;
 		
 		@SuppressWarnings("unchecked")
 		public MappedSystem() {
@@ -64,9 +67,10 @@ public class MapperTest {
 		
 	}
 
+	@Wire
 	private static class MappedManager extends Manager {
-		@Mapper private ComponentMapper<ComponentX> x;
-		@Mapper private ComponentMapper<ComponentY> y;
+		private ComponentMapper<ComponentX> x;
+		private ComponentMapper<ComponentY> y;
 		
 		@Override
 		protected void initialize() {}

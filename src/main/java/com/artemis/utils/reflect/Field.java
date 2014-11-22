@@ -143,19 +143,6 @@ public final class Field {
 		}
 	}
 
-	/** Deprecated: Use isAnnotationPresent instead. */
-	@Deprecated
-	public boolean hasAnnotation(Class annotationClass) {
-		return isAnnotationPresent(annotationClass);
-	}
-
-	/** Deprecated: Use getDeclaredAnnotation instead. */
-	@Deprecated
-	public <T extends java.lang.annotation.Annotation> T getAnnotation(Class<T> annotationClass) {
-		final Annotation declaredAnnotation = getDeclaredAnnotation(annotationClass);
-		return declaredAnnotation != null ? declaredAnnotation.getAnnotation(annotationClass) : null;
-	}
-
 	/** Returns true if the field includes an annotation of the provided class type. */
 	public boolean isAnnotationPresent (Class<? extends java.lang.annotation.Annotation> annotationType) {
 		return field.isAnnotationPresent(annotationType);

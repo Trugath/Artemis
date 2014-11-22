@@ -94,59 +94,6 @@ public final class Entity {
 	public String toString() {
 		return "Entity[" + id + "]";
 	}
-	
-	/**
-	 * @deprecated See {@link Entity#edit()}
-	 */
-	@Deprecated
-	public <T extends Component> T createComponent(Class<T> componentKlazz) {
-		return edit().create(componentKlazz);
-	}
-
-	/**
-	 * @deprecated See {@link Entity#edit()}
-	 */
-	@Deprecated
-	public Entity addComponent(Component component) {
-		edit().add(component);
-		return this;
-	}
-	
-	/**
-	 * @deprecated See {@link Entity#edit()}
-	 */
-	@Deprecated
-	public Entity addComponent(Component component, ComponentType type) {
-		edit().add(component, type);
-		return this;
-	}
-
-	/**
-	 * @deprecated See {@link Entity#edit()}
-	 */
-	@Deprecated
-	public Entity removeComponent(Component component) {
-		edit().remove(component);
-		return this;
-	}
-
-	/**
-	 * @deprecated See {@link Entity#edit()}
-	 */
-	@Deprecated
-	public Entity removeComponent(ComponentType type) {
-		edit().remove(type);
-		return this;
-	}
-	
-	/**
-	 * @deprecated See {@link Entity#edit()}
-	 */
-	@Deprecated
-	public Entity removeComponent(Class<? extends Component> type) {
-		edit().remove(type);
-		return this;
-	}
 
 	/**
 	 * Checks if the entity has been added to the world and has not been
@@ -161,21 +108,7 @@ public final class Entity {
 		return world.getEntityManager().isActive(id);
 	}
 	
-	/**
-	 * Will check if the entity is enabled in the world.
-	 * <p>
-	 * By default all entities that are added to world are enabled, this will
-	 * only return false if an entity has been explicitly disabled.
-	 * </p>
-	 * 
-	 * @return {@code true} if it's enabled
-	 * @deprecated use components to implement state instead.
-	 */
-	@Deprecated
-	public boolean isEnabled() {
-		return world.getEntityManager().isEnabled(id);
-	}
-	
+
 	/**
 	 * Retrieves component from this entity.
 	 * <p>
@@ -230,48 +163,12 @@ public final class Entity {
 	}
 
 	/**
-	 * @deprecated Automatically managed.
-	 */
-	@Deprecated
-	public void addToWorld() {}
-	
-	/**
-	 * @deprecated Automatically managed.
-	 */
-	@Deprecated
-	public void changedInWorld() {}
-
-	/**
 	 * Delete this entity from the world.
 	 */
 	public void deleteFromWorld() {
 		edit().deleteEntity();
 	}
-	
-	/**
-	 * (Re)enable the entity in the world, after it having being disabled.
-	 * <p>
-	 * Won't do anything unless it was already disabled.
-	 * </p>
-	 * @deprecated create your own components to track state.
-	 */
-	@Deprecated
-	public void enable() {
-		world.enable(this);
-	}
-	
-	/**
-	 * Disable the entity from being processed.
-	 * <p>
-	 * Won't delete it, it will continue to exist but won't get processed.
-	 * </p>
-	 * @deprecated create your own components to track state.
-	 */
-	@Deprecated
-	public void disable() {
-		world.disable(this);
-	}
-	
+
 	/**
 	 * Get the UUID for this entity.
 	 * <p>

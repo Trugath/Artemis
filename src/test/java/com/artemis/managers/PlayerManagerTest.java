@@ -43,11 +43,7 @@ public class PlayerManagerTest {
         world.initialize();
 
         Entity e1 = world.createEntity();
-        world.addEntity(e1);
-
         Entity e2 = world.createEntity();
-        world.addEntity(e2);
-
         world.process();
 
         pm.setPlayer(e1, "a");

@@ -22,7 +22,6 @@ public class TeamManagerTest {
 
     @After
     public void tearDown() {
-        world.deleteManager(teamManager);
         teamManager = null;
         world = null;
     }

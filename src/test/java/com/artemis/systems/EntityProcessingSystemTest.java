@@ -1,23 +1,24 @@
 package com.artemis.systems;
 
 import com.artemis.*;
-import com.artemis.annotations.Mapper;
+import com.artemis.annotations.Wire;
 import org.junit.Test;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+@Wire
 public class EntityProcessingSystemTest {
 
     class RemovableComponent extends Component {
 
     }
 
-    class IssueTenEntityProcessingSystem extends EntityProcessingSystem {
+    @Wire class IssueTenEntityProcessingSystem extends EntityProcessingSystem {
 
         public boolean insertedTriggered = false;
         public boolean removedTriggered = false;
-        private @Mapper ComponentMapper<RemovableComponent> cmpMapper;
+        private ComponentMapper<RemovableComponent> cmpMapper;
 
         private RemovableComponent cmp;
 
@@ -49,7 +50,7 @@ public class EntityProcessingSystemTest {
          */
         protected void removed(Entity e) {
             removedTriggered = true;
-            // assertTrue(cmpMapper.has(e)); <-- User wants to be able to get the component from the removed entity
+            // assertTrue(cmpMapper.has(e)); // <-- User wants to be able to get the component from the removed entity
         }
     }
 
@@ -64,21 +65,18 @@ public class EntityProcessingSystemTest {
         world.process();
 
         Entity e = world.createEntity();
-        world.addEntity(e);
         world.process();
 
         assertFalse(system.insertedTriggered);
         assertFalse(system.removedTriggered);
 
-        e.addComponent(new RemovableComponent());
-        e.changedInWorld();
+        e.edit().add(new RemovableComponent());
         world.process();
 
         assertTrue(system.insertedTriggered);
         assertFalse(system.removedTriggered);
 
-        e.removeComponent(RemovableComponent.class);
-        e.changedInWorld();
+        e.edit().remove(RemovableComponent.class);
         world.process();
 
         assertTrue(system.removedTriggered);

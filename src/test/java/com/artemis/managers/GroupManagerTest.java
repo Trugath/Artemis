@@ -47,7 +47,6 @@ public class GroupManagerTest {
         GroupManager gm = world.getManager(GroupManager.class);
 
         Entity e = world.createEntity();
-        e.addToWorld();
         world.process();
 
         assertFalse(gm.isInAnyGroup(e));

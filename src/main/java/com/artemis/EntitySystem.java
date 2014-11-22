@@ -185,7 +185,7 @@ public abstract class EntitySystem implements EntityObserver {
 		
 		EntityManager em = world.getEntityManager();
 		int id = e.getId();
-		boolean interested = aspectCache.get(em.getIdentity(e)) && em.isActive(id) && em.isEnabled(id);
+		boolean interested = aspectCache.get(em.getIdentity(e)) && em.isActive(id);
 		boolean contains = activeIds.get(id);
 		
 		if (interested && !contains) {
@@ -294,36 +294,6 @@ public abstract class EntitySystem implements EntityObserver {
 	public final void deleted(Entity e) {
 		if(activeIds.get(e.getId()))
 			removeFromSystem(e);
-	}
-
-	/**
-	 * Call when an entity interesting to the system was disabled.
-	 *
-	 * <p>
-	 * If the disabled entity is in this system it will be removed
-	 * </p>
-	 *
-	 * @param e
-	 *			the disabled entity
-	 */
-	@Override
-	public final void disabled(Entity e) {
-		if(activeIds.get(e.getId()))
-			removeFromSystem(e);
-	}
-
-	/**
-	 * Call when an entity interesting to the system was (re)enabled.
-	 * <p>
-	 * If the enabled entity is of interest, in will be (re)inserted.
-	 * </p>
-	 *
-	 * @param e
-	 *			the (re)enabled entity
-	 */
-	@Override
-	public final void enabled(Entity e) {
-		check(e);
 	}
 	
 	/**

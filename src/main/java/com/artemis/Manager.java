@@ -51,12 +51,6 @@ public abstract class Manager implements EntityObserver {
 	public void deleted(Entity e) {}
 	
 	@Override
-	public void disabled(Entity e) {}
-
-	@Override
-	public void enabled(Entity e) {}
-	
-	@Override
 	public final void added(ImmutableBag<Entity> entities) {
 		Object[] data = ((WildBag<Entity>)entities).getData();
 		for (int i = 0, s = entities.size(); s > i; i++) {

@@ -26,7 +26,6 @@ public class TagManagerTest {
 
     @After
     public void tearDown() {
-        world.deleteManager(tagManager);
         tagManager = null;
         world = null;
     }
@@ -105,7 +104,6 @@ public class TagManagerTest {
     @Test
     public void oneTagsForEntityDeleted() throws Exception {
         Entity e = world.createEntity();
-        world.addEntity(e);
         world.process();
 
         tagManager.register("a", e);
@@ -115,7 +113,7 @@ public class TagManagerTest {
         assertTrue(tagManager.getRegisteredTags().contains("a"));
         assertEquals(e, tagManager.getEntity("a"));
 
-        world.deleteEntity(e);
+        e.deleteFromWorld();
         world.process();
 
         assertFalse(tagManager.isRegistered("a"));
@@ -126,7 +124,6 @@ public class TagManagerTest {
     @Test
     public void twoTagsForEntityDeleted() throws Exception {
         Entity e = world.createEntity();
-        world.addEntity(e);
         world.process();
 
         tagManager.register("a", e);
@@ -141,7 +138,7 @@ public class TagManagerTest {
         assertEquals(e, tagManager.getEntity("a"));
         assertEquals(e, tagManager.getEntity("b"));
 
-        world.deleteEntity(e);
+        e.deleteFromWorld();
         world.process();
 
         assertFalse(tagManager.isRegistered("a"));
@@ -156,7 +153,6 @@ public class TagManagerTest {
     @Test
     public void addRemoveExtraTag() throws Exception {
         Entity e = world.createEntity();
-        world.addEntity(e);
         world.process();
 
         tagManager.register("a", e);
@@ -185,7 +181,7 @@ public class TagManagerTest {
         assertEquals(e, tagManager.getEntity("a"));
         assertNotEquals(e, tagManager.getEntity("b"));
 
-        world.deleteEntity(e);
+        e.deleteFromWorld();
         world.process();
 
         assertFalse(tagManager.isRegistered("a"));

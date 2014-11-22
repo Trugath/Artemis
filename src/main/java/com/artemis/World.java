@@ -1,6 +1,5 @@
 package com.artemis;
 
-import com.artemis.annotations.Mapper;
 import com.artemis.annotations.Wire;
 import com.artemis.managers.UuidEntityManager;
 import com.artemis.utils.Bag;
@@ -56,14 +55,6 @@ public class World {
 	 * Runs actions on systems and managers when entities are deleted.
 	 */
 	private final DeletedPerformer deletedPerformer;
-	/**
-	 * Runs actions on systems and managers when entities are (re)enabled.
-	 */
-	private final EnabledPerformer enabledPerformer;
-	/**
-	 * Runs actions on systems and managers when entities are disabled.
-	 */
-	private final DisabledPerformer disabledPerformer;
 
 	/**
 	 * Contains all managers and managers classes mapped.
@@ -108,14 +99,6 @@ public class World {
 	}
 
 	/**
-	 * @deprecated {@link World#World(WorldConfiguration)} provides more fine-grained control.
-	 */
-	@Deprecated
-	public World(int expectedEntityCount) {
-		this(new WorldConfiguration().maxRebuiltIndicesPerTick(expectedEntityCount));
-	}
-	
-	/**
 	 * Creates a new world.
 	 * <p>
 	 * An EntityManager and ComponentManager are created and added upon
@@ -139,8 +122,6 @@ public class World {
 		addedPerformer = new AddedPerformer();
 		changedPerformer = new ChangedPerformer();
 		deletedPerformer = new DeletedPerformer();
-		enabledPerformer = new EnabledPerformer();
-		disabledPerformer = new DisabledPerformer();
 
 		cm = new ComponentManager(configuration.expectedEntityCount());
 		setManager(cm);
@@ -297,18 +278,6 @@ public class World {
 	}
 
 	/**
-	 * Deletes the manager from this world.
-	 *
-	 * @param manager manager to delete
-	 * @deprecated A world should be static once initialized
-	 */
-	@Deprecated
-	public void deleteManager(Manager manager) {
-		managers.remove(manager.getClass());
-		managersBag.remove(manager);
-	}
-
-	/**
 	 * Time since last game loop.
 	 *
 	 * @return delta time since last game loop
@@ -326,69 +295,8 @@ public class World {
 		this.delta = delta;
 	}
 
-	/**
-	 * Adds a entity to this world.
-	 *
-	 * @param e the entity to add
-	 * @deprecated internally managed by artemis
-	 */
-	@Deprecated
-	public void addEntity(Entity e) {}
-
-	/**
-	 * @deprecated does nothing, internally tracked by artemis now.
-	 */
-	@Deprecated
-	public void changedEntity(Entity e) {}
-
-	/**
-	 * Delete the entity from the world.
-	 *
-	 * @param e the entity to delete
-	 * 
-	 * @deprecated Better invoke {@link Entity#deleteFromWorld()} or {@link EntityEdit#deleteEntity()}
-	 */
-	@Deprecated @SuppressWarnings("static-method")
-	public void deleteEntity(Entity e) {
-		e.edit().deleteEntity();
-	}
-	
 	boolean isRebuildingIndexAllowed() {
 		return maxRebuiltIndicesPerTick > rebuiltIndices;
-	}
-
-	/**
-	 * (Re)enable the entity in the world, after it having being disabled.
-	 * <p>
-	 * Won't do anything unless it was already disabled.
-	 * </p>
-	 *
-	 * @param e the entity to enable
-	 * @deprecated create your own components to track state.
-	 */
-	@Deprecated
-	public void enable(Entity e) {
-		if (disabled.contains(e))
-			disabled.remove(e);
-		
-		enabled.add(e);
-	}
-
-	/**
-	 * Disable the entity from being processed.
-	 * <p>
-	 * Won't delete it, it will continue to exist but won't get processed.
-	 * </p>
-	 *
-	 * @param e the entity to disable
-	 * @deprecated create your own components to track state.
-	 */
-	@Deprecated
-	public void disable(Entity e) {
-		if (enabled.contains(e))
-			enabled.remove(e);
-		
-		disabled.add(e);
 	}
 
 	/**
@@ -482,19 +390,6 @@ public class World {
 		systemsToInit.add(system);
 
 		return system;
-	}
-
-	/**
-	 * Remove the specified system from the world.
-	 *
-	 * @param system the system to be deleted from world
-	 * @deprecated A world should be static once initialized
-	 */
-	@Deprecated
-	public void deleteSystem(EntitySystem system) {
-		systems.remove(system.getClass());
-		systemsBag.remove(system);
-		systemsToInit.remove(system);
 	}
 
 	/**
@@ -595,8 +490,6 @@ public class World {
 			check(added, addedPerformer);
 			check(changed, changedPerformer);
 			check(deleted, deletedPerformer);
-			check(disabled, disabledPerformer);
-			check(enabled, enabledPerformer);
 		}
 	}
 
@@ -634,34 +527,6 @@ public class World {
 		@Override
 		public void perform(EntityObserver observer, WildBag<Entity> entities) {
 			observer.deleted(entities);
-		}
-	}
-
-	/**
-	 * Runs {@link EntityObserver#enabled}.
-	 */
-	private static final class EnabledPerformer implements Performer {
-
-		@Override
-		public void perform(EntityObserver observer, WildBag<Entity> entities) {
-			Object[] data = entities.getData();
-			for (int i = 0, s = entities.size(); s > i; i++) {
-				observer.enabled((Entity)data[i]);
-			}
-		}
-	}
-
-	/**
-	 * Runs {@link EntityObserver#disabled}.
-	 */
-	private static final class DisabledPerformer implements Performer {
-
-		@Override
-		public void perform(EntityObserver observer, WildBag<Entity> entities) {
-			Object[] data = entities.getData();
-			for (int i = 0, s = entities.size(); s > i; i++) {
-				observer.disabled((Entity)data[i]);
-			}
 		}
 	}
 
@@ -747,7 +612,7 @@ public class World {
 				Class<?> clazz = target.getClass();
 
 				if (ClassReflection.isAnnotationPresent(clazz, Wire.class)) {
-					Wire wire = ClassReflection.getAnnotation(clazz, Wire.class);
+					Wire wire = ClassReflection.getDeclaredAnnotation(clazz, Wire.class).getAnnotation(Wire.class);
 					if (wire != null) {
 						injectValidFields(target, clazz, wire.failOnNull(), wire.injectInherited());
 					}
@@ -784,7 +649,7 @@ public class World {
 			Field[] declaredFields = ClassReflection.getDeclaredFields(clazz);
 			for (int i = 0, s = declaredFields.length; s > i; i++) {
 				Field field = declaredFields[i];
-				if (field.isAnnotationPresent(Mapper.class) || field.isAnnotationPresent(Wire.class)) {
+				if (field.isAnnotationPresent(Wire.class)) {
 					injectField(target, field, field.isAnnotationPresent(Wire.class));
 				}
 			}
@@ -830,7 +695,7 @@ public class World {
 				}
 				field.set(target, factory);
 			} else if (field.isAnnotationPresent(Wire.class)) {
-				final Wire wire = field.getAnnotation(Wire.class);
+				final Wire wire = field.getDeclaredAnnotation(Wire.class).getAnnotation(Wire.class);
 				String key = wire.name();
 				if ("".equals(key))
 					key = field.getType().getName();
