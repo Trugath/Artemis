@@ -4,6 +4,7 @@ import com.artemis.utils.Bag;
 
 import java.util.BitSet;
 import java.util.Collection;
+import java.util.Collections;
 
 
 /**
@@ -171,12 +172,10 @@ public class Aspect {
 	 *
 	 * @return an aspect that can be matched against entities
 	 */
-	public Aspect all(Class<? extends Component>... types) {
+	@SafeVarargs
+	public final Aspect all(Class<? extends Component>... types) {
 		requireInitialized(false);
-		for (Class<? extends Component> t : types) {
-			allTypes.add(t);
-		}
-
+		Collections.addAll(allTypes, types);
 		return this;
 	}
 	
@@ -211,11 +210,10 @@ public class Aspect {
 	 *
 	 * @return an aspect that can be matched against entities
 	 */
-	public Aspect exclude(Class<? extends Component>... types) {
+	@SafeVarargs
+	public final Aspect exclude(Class<? extends Component>... types) {
 		requireInitialized(false);
-		for (Class<? extends Component> t : types) {
-			exclusionTypes.add(t);
-		}
+		Collections.addAll(exclusionTypes, types);
 		return this;
 	}
 	
@@ -249,11 +247,10 @@ public class Aspect {
 	 *
 	 * @return an aspect that can be matched against entities
 	 */
-	public Aspect one(Class<? extends Component>... types) {
+	@SafeVarargs
+	public final Aspect one(Class<? extends Component>... types) {
 		requireInitialized(false);
-		for (Class<? extends Component> t : types) {
-			oneTypes.add(t);
-		}
+		Collections.addAll(oneTypes, types);
 		return this;
 	}
 	
@@ -293,6 +290,7 @@ public class Aspect {
 	 *
 	 * @return an aspect that can be matched against entities
 	 */
+	@SafeVarargs
 	public static Aspect getAspectForAll(Class<? extends Component>... types) {
 		Aspect aspect = new Aspect();
 		aspect.all(types);
@@ -308,6 +306,7 @@ public class Aspect {
 	 *
 	 * @return an aspect that can be matched against entities
 	 */
+	@SafeVarargs
 	public static Aspect getAspectForOne(Class<? extends Component>... types) {
 		Aspect aspect = new Aspect();
 		aspect.one(types);

@@ -37,6 +37,7 @@ public class EntityTransmuterTest {
 			.build();
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Test
 	public void transmuting_entities() {
 		Entity e1 = createEntity(ComponentY.class, ReusedComponent.class);
@@ -63,6 +64,7 @@ public class EntityTransmuterTest {
 		assertNull(e1.getComponent(ComponentY.class));
 	}
 
+	@SuppressWarnings("unchecked")
 	@Test
 	public void transmute_twice() {
 		Entity e = createEntity(ComponentY.class, ReusedComponent.class);
@@ -93,7 +95,8 @@ public class EntityTransmuterTest {
 		assertEquals(0, es.getActives().size());
 	}
 
-	private Entity createEntity(Class<? extends Component>... components) {
+	@SafeVarargs
+	private final Entity createEntity(Class<? extends Component>... components) {
 		Entity e = world.createEntity();
 		EntityEdit edit = e.edit();
 		for (Class<? extends Component> c : components)

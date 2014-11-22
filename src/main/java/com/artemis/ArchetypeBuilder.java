@@ -59,10 +59,9 @@ public class ArchetypeBuilder {
 	 * @param type
 	 * @return This instance for chaining.
 	 */
-	public ArchetypeBuilder add(Class<? extends Component>... types) {
-		for (int i = 0; types.length > i; i++) {
-			Class<? extends Component> type = types[i];
-			
+	@SafeVarargs
+	public final ArchetypeBuilder add(Class<? extends Component>... types) {
+		for (Class<? extends Component> type : types) {
 			if (!classes.contains(type)) {
 				classes.add(type);
 			}
@@ -88,9 +87,10 @@ public class ArchetypeBuilder {
 	 * @param type
 	 * @return This instance for chaining.
 	 */
-	public ArchetypeBuilder remove(Class<? extends Component>... types) {
-		for (int i = 0; types.length > i; i++) {
-			classes.remove(types[i]);
+	@SafeVarargs
+	public final ArchetypeBuilder remove(Class<? extends Component>... types) {
+		for (Class<? extends Component> type : types) {
+			classes.remove(type);
 		}
 		
 		return this;
@@ -111,8 +111,8 @@ public class ArchetypeBuilder {
 	/** generate bitset mask of types. */
 	private static BitSet bitset(ComponentType[] types) {
 		BitSet bs = new BitSet();
-		for (int i = 0; types.length > i; i++)
-			bs.set(types[i].getIndex());
+		for (ComponentType type : types)
+			bs.set(type.getIndex());
 			
 		return bs;
 	}
