@@ -1,6 +1,9 @@
 package com.artemis;
 
 public abstract class ComponentMapper<A extends Component> {
+
+    public A apply(Entity e) throws ArrayIndexOutOfBoundsException { return get(e); }
+
 	/**
 	 * Fast but unsafe retrieval of a component for this entity.
 	 * <p>
