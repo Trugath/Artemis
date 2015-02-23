@@ -36,7 +36,7 @@ public class EntityManager extends Manager {
 	 * Creates a new EntityManager Instance.
 	 */
 	protected EntityManager(int initialContainerSize) {
-		entities = new Bag<Entity>(initialContainerSize);
+		entities = new Bag<>(initialContainerSize);
 		disabled = new BitSet();
 	}
 	
@@ -144,7 +144,7 @@ public class EntityManager extends Manager {
 	 * @return true if active, false if not
 	 */
 	public boolean isActive(int entityId) {
-		return (entities.size() > entityId) ? entities.get(entityId) != null : false; 
+		return (entities.size() > entityId) && entities.get(entityId) != null;
 	}
 	
 
@@ -226,7 +226,7 @@ public class EntityManager extends Manager {
 		private final WildBag<BitSet> composition;
 		
 		ComponentIdentityResolver() {
-			composition = new WildBag<BitSet>();
+			composition = new WildBag<>();
 			composition.add(null);
 			composition.add(new BitSet());
 		}
@@ -254,8 +254,8 @@ public class EntityManager extends Manager {
 		RecyclingEntityFactory(World world, IntBag entityToIdentity) {
 			this.world = world;
 			this.entityToIdentity = entityToIdentity;
-			recycled = new Bag<Entity>();
-			limbo = new WildBag<Entity>();
+			recycled = new Bag<>();
+			limbo = new WildBag<>();
 		}
 		
 		void free(Entity e) {

@@ -106,18 +106,18 @@ public class World {
 	 * </p>
 	 */
 	public World(WorldConfiguration configuration) {
-		managers = new IdentityHashMap<Class<? extends Manager>, Manager>();
-		managersBag = new WildBag<Manager>();
+		managers = new IdentityHashMap<>();
+		managersBag = new WildBag<>();
 
-		systems = new IdentityHashMap<Class<?>, EntitySystem>();
-		systemsBag = new WildBag<EntitySystem>();
-		systemsToInit = new Bag<EntitySystem>();
+		systems = new IdentityHashMap<>();
+		systemsBag = new WildBag<>();
+		systemsToInit = new Bag<>();
 
-		added = new WildBag<Entity>();
-		changed = new WildBag<Entity>();
-		deleted = new WildBag<Entity>();
-		enabled = new WildBag<Entity>();
-		disabled = new WildBag<Entity>();
+		added = new WildBag<>();
+		changed = new WildBag<>();
+		deleted = new WildBag<>();
+		enabled = new WildBag<>();
+		disabled = new WildBag<>();
 
 		addedPerformer = new AddedPerformer();
 		changedPerformer = new ChangedPerformer();
@@ -179,7 +179,7 @@ public class World {
 	 * @throws ArtemisMultiException if any managers or systems throws an exception.
 	 */
 	public void dispose() {
-		List<Throwable> exceptions = new ArrayList<Throwable>();
+		List<Throwable> exceptions = new ArrayList<>();
 
 		for (Manager manager : managersBag) {
 			try {
@@ -583,9 +583,9 @@ public class World {
 		ArtemisInjector(World world, WorldConfiguration config) {
 			this.world = world;
 			
-			systems = new IdentityHashMap<Class<?>, Class<?>>();
-			managers = new IdentityHashMap<Class<?>, Class<?>>();
-			pojos = new HashMap<String, Object>(config.injectables);
+			systems = new IdentityHashMap<>();
+			managers = new IdentityHashMap<>();
+			pojos = new HashMap<>(config.injectables);
 		}
 		
 		void update() {
@@ -628,9 +628,9 @@ public class World {
 				throws ReflectionException {
 
 			Field[] declaredFields = ClassReflection.getDeclaredFields(clazz);
-			for (int i = 0, s = declaredFields.length; s > i; i++) {
-				injectField(target, declaredFields[i], failOnNull);
-			}
+            for (Field declaredField : declaredFields) {
+                injectField(target, declaredField, failOnNull);
+            }
 
 			// should bail earlier, but it's just one more round.
 			while (injectInherited && (clazz = clazz.getSuperclass()) != Object.class) {
@@ -647,12 +647,11 @@ public class World {
 		@SuppressWarnings("deprecation")
 		private void injectClass(Object target, Class<?> clazz) throws ReflectionException {
 			Field[] declaredFields = ClassReflection.getDeclaredFields(clazz);
-			for (int i = 0, s = declaredFields.length; s > i; i++) {
-				Field field = declaredFields[i];
-				if (field.isAnnotationPresent(Wire.class)) {
-					injectField(target, field, field.isAnnotationPresent(Wire.class));
-				}
-			}
+            for (Field field : declaredFields) {
+                if (field.isAnnotationPresent(Wire.class)) {
+                    injectField(target, field, field.isAnnotationPresent(Wire.class));
+                }
+            }
 		}
 
 		@SuppressWarnings("unchecked")

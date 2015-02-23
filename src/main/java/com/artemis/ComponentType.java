@@ -15,8 +15,8 @@ import com.artemis.utils.reflect.Constructor;
  */
 public class ComponentType {
 	static enum Taxonomy {
-		BASIC, POOLED, PACKED;
-	}
+		BASIC, POOLED, PACKED
+    }
 
 	
 	/** The class type of the component type. */
@@ -44,12 +44,12 @@ public class ComponentType {
 
 	private static boolean hasWorldConstructor(Class<? extends Component> type) {
 		Constructor[] constructors = ClassReflection.getConstructors(type);
-		for (int i = 0; constructors.length > i; i++) {
-			@SuppressWarnings("rawtypes")
-			Class[] types = constructors[i].getParameterTypes();
-			if (types.length == 1 && types[0] == World.class)
-				return true;
-		}
+        for (Constructor constructor : constructors) {
+            @SuppressWarnings("rawtypes")
+            Class[] types = constructor.getParameterTypes();
+            if (types.length == 1 && types[0] == World.class)
+                return true;
+        }
 		
 		return false;
 	}

@@ -6,7 +6,7 @@ import java.util.Map;
 public final class WorldConfiguration {
 	private int expectedEntityCount = 128;
 	private int maxRebuiltIndicesPerTick = 1;
-	Map<String, Object> injectables = new HashMap<String, Object>();
+	Map<String, Object> injectables = new HashMap<>();
 	
 	public int expectedEntityCount() {
 		return expectedEntityCount;

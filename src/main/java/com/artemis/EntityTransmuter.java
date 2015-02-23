@@ -16,7 +16,7 @@ public final class EntityTransmuter {
 		this.world = world;
 		this.additions = additions;
 		this.removals = removals;
-		operations = new Bag<TransmuteOperation>();
+		operations = new Bag<>();
 
 		bs = new BitSet();
 	}
@@ -55,7 +55,7 @@ public final class EntityTransmuter {
 
 	private Bag<ComponentType> getAdditions(BitSet origin) {
 		ComponentTypeFactory tf = world.getComponentManager().typeFactory;
-		Bag<ComponentType> types = new Bag<ComponentType>();
+		Bag<ComponentType> types = new Bag<>();
 		for (int i = additions.nextSetBit(0); i >= 0; i = additions.nextSetBit(i + 1)) {
 			if (!origin.get(i))
 				types.add(tf.getTypeFor(i));
@@ -66,7 +66,7 @@ public final class EntityTransmuter {
 
 	private Bag<ComponentType> getRemovals(BitSet origin) {
 		ComponentTypeFactory tf = world.getComponentManager().typeFactory;
-		Bag<ComponentType> types = new Bag<ComponentType>();
+		Bag<ComponentType> types = new Bag<>();
 		for (int i = removals.nextSetBit(0); i >= 0; i = removals.nextSetBit(i + 1)) {
 			if (origin.get(i))
 				types.add(tf.getTypeFor(i));

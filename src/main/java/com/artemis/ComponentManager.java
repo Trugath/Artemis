@@ -37,11 +37,11 @@ public class ComponentManager extends Manager {
 	 */
 	protected ComponentManager(int entityContainerSize) {
 		this.highestSeenEntityId = entityContainerSize;
-		componentsByType = new Bag<Bag<Component>>();
-		packedComponents = new Bag<PackedComponent>();
-		packedComponentOwners = new Bag<BitSet>();
+		componentsByType = new Bag<>();
+		packedComponents = new Bag<>();
+		packedComponentOwners = new Bag<>();
 		pooledComponents = new ComponentPool();
-		deleted = new Bag<Entity>();
+		deleted = new Bag<>();
 		
 		typeFactory = new ComponentTypeFactory();
 	}
@@ -192,9 +192,9 @@ public class ComponentManager extends Manager {
 	
 	protected void addComponents(Entity e, Archetype archetype) {
 		ComponentType[] types = archetype.types;
-		for (int i = 0, s = types.length; s > i; i++) {
-			create(e, types[i]);
-		}
+        for (ComponentType type : types) {
+            create(e, type);
+        }
 	}
 	
 	private void addPackedComponent(ComponentType type, PackedComponent component) {
@@ -208,7 +208,7 @@ public class ComponentManager extends Manager {
 	{
 		Bag<Component> components = componentsByType.safeGet(type.getIndex());
 		if(components == null) {
-			components = new Bag<Component>(highestSeenEntityId);
+			components = new Bag<>(highestSeenEntityId);
 			componentsByType.set(type.getIndex(), components);
 		}
 		
@@ -258,7 +258,7 @@ public class ComponentManager extends Manager {
 
 		Bag<Component> components = componentsByType.safeGet(type.getIndex());
 		if(components == null) {
-			components = new Bag<Component>();
+			components = new Bag<>();
 			componentsByType.set(type.getIndex(), components);
 		}
 		return components;
@@ -327,9 +327,7 @@ public class ComponentManager extends Manager {
 	 * Removes all components from entities marked for deletion.
 	 */
 	protected void clean() {
-		for(Entity e : deleted) {
-			removeComponents(e);
-		}
+        deleted.forEach(this::removeComponents);
 		deleted.clear();
 	}
 }

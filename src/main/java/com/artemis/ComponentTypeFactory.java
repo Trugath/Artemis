@@ -11,13 +11,13 @@ public class ComponentTypeFactory {
 	 * will be stored here.
 	 */
 	private final IdentityHashMap<Class<? extends Component>, ComponentType> componentTypes
-			= new IdentityHashMap<Class<? extends Component>, ComponentType>();
+			= new IdentityHashMap<>();
 	
 	/** Amount of generated component types. */
 	private int componentTypeCount = 0;
 	
 	/** Index of this component type in componentTypes. */
-	private final Bag<ComponentType> types = new Bag<ComponentType>();
+	private final Bag<ComponentType> types = new Bag<>();
 	
 	
 	/**

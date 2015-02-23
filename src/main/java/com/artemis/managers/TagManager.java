@@ -31,7 +31,7 @@ public class TagManager extends Manager {
 
 		entitiesByTag.put(tag, e);
 		if(!tagsByEntity.containsKey(e))
-			tagsByEntity.put(e, new Bag<String>());
+			tagsByEntity.put(e, new Bag<>());
 		tagsByEntity.get(e).add(tag);
 	}
 
@@ -61,9 +61,7 @@ public class TagManager extends Manager {
 	@Override
 	public void deleted(Entity e) {
 		if(tagsByEntity.containsKey(e)) {
-			for (String removedTag : tagsByEntity.remove(e)) {
-				entitiesByTag.remove(removedTag);
-			}
+            tagsByEntity.remove(e).forEach(entitiesByTag::remove);
 		}
 	}
 }

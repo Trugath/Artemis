@@ -97,6 +97,6 @@ public abstract class ComponentMapper<A extends Component> {
 		if (tf.getTypeFor(type).isPackedComponent())
 			return (ComponentMapper<T>)PackedComponentMapper.create((Class<PackedComponent>)type, world);
 		else
-			return new BasicComponentMapper<T>(type, world);
+			return new BasicComponentMapper<>(type, world);
 	}
 }

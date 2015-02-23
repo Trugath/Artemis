@@ -47,7 +47,7 @@ public class TeamManager extends Manager {
 	
 	public ImmutableBag<String> getPlayers(String team) {
 		if(!playersByTeam.containsKey(team))
-			return new Bag<String>();
+			return new Bag<>();
 		return playersByTeam.get(team);
 	}
 	

@@ -25,7 +25,7 @@ public class ArchetypeBuilder {
 	 * @param parent archetype composition to copy.
 	 */
 	public ArchetypeBuilder(Archetype parent) {
-		classes = new Bag<Class<? extends Component>>();
+		classes = new Bag<>();
 		if (parent == null)
 			return;
 		

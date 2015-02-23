@@ -50,7 +50,7 @@ class PackedComponentMapper<A extends PackedComponent> extends ComponentMapper<A
 	}
 	
 	static PackedComponentMapper<PackedComponent> create(Class<PackedComponent> type, World world) {
-		return new PackedComponentMapper<PackedComponent>(type, world);
+		return new PackedComponentMapper<>(type, world);
 	}
 
 	@Override

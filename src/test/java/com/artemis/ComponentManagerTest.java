@@ -20,16 +20,10 @@ public class ComponentManagerTest {
 		try {
 			Field field = field("componentTypeCount");
 			field.setInt(world.getComponentManager().typeFactory, 0xffff);
-		} catch (NoSuchFieldException e) {
-			fail(e.getMessage());
-		} catch (SecurityException e) {
-			fail(e.getMessage());
-		} catch (IllegalArgumentException e) {
-			fail(e.getMessage());
-		} catch (IllegalAccessException e) {
+		} catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
 			fail(e.getMessage());
 		}
-	}
+    }
 
 	@Test
 	public void ensure_basic_components_dont_throw_aioob() throws Exception {

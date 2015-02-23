@@ -6,7 +6,7 @@ import java.util.BitSet;
 
 final class EntityEditPool {
 	
-	private final Bag<EntityEdit> pool = new Bag<EntityEdit>();
+	private final Bag<EntityEdit> pool = new Bag<>();
 	private final World world;
 	
 	private WildBag<EntityEdit> edited;
@@ -16,8 +16,8 @@ final class EntityEditPool {
 	EntityEditPool(World world) {
 		this.world = world;
 		
-		edited = new WildBag<EntityEdit>();
-		alternateEdited = new WildBag<EntityEdit>();
+		edited = new WildBag<>();
+		alternateEdited = new WildBag<>();
 		editedIds = new BitSet();
 	}
 	

@@ -1,6 +1,5 @@
 package com.artemis;
 
-import com.artemis.utils.Bag;
 import com.artemis.utils.ImmutableBag;
 
 

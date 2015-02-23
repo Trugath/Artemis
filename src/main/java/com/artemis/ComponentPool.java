@@ -12,7 +12,7 @@ class ComponentPool {
 	private final Map<Class<? extends PooledComponent>, Pool> pools;
 	
 	ComponentPool() {
-		pools = new IdentityHashMap<Class<? extends PooledComponent>, ComponentPool.Pool>();
+		pools = new IdentityHashMap<>();
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -39,7 +39,7 @@ class ComponentPool {
 	}
 	
 	private static class Pool {
-		private final Bag<PooledComponent> cache = new Bag<PooledComponent>();
+		private final Bag<PooledComponent> cache = new Bag<>();
 		
 		@SuppressWarnings("unchecked")
 		<T extends PooledComponent> T obtain() {

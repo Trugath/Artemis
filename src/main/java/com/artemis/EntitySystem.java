@@ -46,7 +46,7 @@ public abstract class EntitySystem implements EntityObserver {
 	public EntitySystem(Aspect aspect) {
 		this.aspect = aspect;
 		activeIds = new BitSet();
-		actives = new WildBag<Entity>();
+		actives = new WildBag<>();
 		
 		enabled = true;
 	}

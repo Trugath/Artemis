@@ -5,6 +5,7 @@ import com.artemis.utils.Bag;
 import java.util.BitSet;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.stream.Collectors;
 
 
 /**
@@ -54,9 +55,9 @@ public class Aspect {
 	 * or {@link #getEmpty}.
 	 */
 	private Aspect() {
-		allTypes = new Bag<Class<? extends Component>>();
-		exclusionTypes = new Bag<Class<? extends Component>>();
-		oneTypes = new Bag<Class<? extends Component>>();
+		allTypes = new Bag<>();
+		exclusionTypes = new Bag<>();
+		oneTypes = new Bag<>();
 	}
 	
 	public void initialize(World world) {
@@ -191,9 +192,7 @@ public class Aspect {
 	 */
 	public Aspect all(Collection<Class<? extends Component>> types) {
 		requireInitialized(false);
-		for (Class<? extends Component> t : types) {
-			allTypes.add(t);
-		}
+        allTypes.addAll(types.stream().collect(Collectors.toList()));
 
 		return this;
 	}
@@ -232,9 +231,7 @@ public class Aspect {
 	 */
 	public Aspect exclude(Collection<Class<? extends Component>> types) {
 		requireInitialized(false);
-		for (Class<? extends Component> t : types) {
-			exclusionTypes.add(t);
-		}
+        exclusionTypes.addAll(types.stream().collect(Collectors.toList()));
 		return this;
 	}
 	
@@ -265,9 +262,7 @@ public class Aspect {
 	 */
 	public Aspect one(Collection<Class<? extends Component>> types) {
 		requireInitialized(false);
-		for (Class<? extends Component> t : types) {
-			oneTypes.add(t);
-		}
+        oneTypes.addAll(types.stream().collect(Collectors.toList()));
 		return this;
 	}
 	
