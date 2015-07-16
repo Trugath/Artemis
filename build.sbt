@@ -2,7 +2,7 @@ name := "artemis"
 
 version := "1.0-SNAPSHOT"
 
-scalaVersion := "2.11.6"
+scalaVersion := "2.11.7"
 
 javacOptions ++= Seq("-Xlint:unchecked")
 
