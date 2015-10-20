@@ -13,5 +13,3 @@ scalacOptions ++= List("-Ybackend:GenBCode", "-Ydelambdafy:method", "-target:jvm
 libraryDependencies += "com.google.guava" % "guava-testlib" % "18.0" % "test"
 
 libraryDependencies += "com.novocode" % "junit-interface" % "0.11" % "test"
-
-jacoco.settings
